@@ -115,26 +115,41 @@ function Dice(props: {
     );
 }
 
-function PlayArea(props: {}) {
+function PlayArea() {
     const [dice, setDice] = useState<Die[]>(initDice());
+    const [rollCount, setRollCount] = useState<number>(0);
+
+    const onRollDiceClick = (event: React.MouseEvent) => {
+        event.preventDefault();
+        const newRollCount = rollCount + 1;
+        setDice(rollDice(dice, newRollCount));
+        setRollCount(newRollCount);
+    };
 
     return (
         <div>
             <button
                 className="bg-green-400"
-                onClick={(event) => {
-                    event.preventDefault();
-                    setDice(rollDice(dice));
-                }}
+                disabled={rollCount === 3}
+                onClick={onRollDiceClick}
             >
                 Roll Dice
             </button>
+            <div>{rollCount}</div>
             <Dice
                 dice={dice}
                 onDieLockChange={(index) => {
                     setDice(toggleLock(dice, index));
                 }}
             />
+            <button
+                className="bg-green-400"
+                onClick={(event) => {
+                    event.preventDefault();
+                }}
+            >
+                Finish Round
+            </button>
         </div>
     );
 }

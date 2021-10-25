@@ -72,13 +72,13 @@ export function initDice() {
     return dice;
 }
 
-export function rollDice(dice: Die[]): Die[] {
+export function rollDice(dice: Die[], rollCount: number): Die[] {
     const result = [];
     for (const die of dice) {
         if (die.locked === 'unlocked') {
             die.value = Math.ceil(Math.random() * 6);
         }
-        if (die.locked === 'locked') {
+        if (die.locked === 'locked' || rollCount === 3) {
             die.locked = 'permanently-locked';
         }
         result.push(die);
