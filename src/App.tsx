@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import { Player, Die, GameState } from './models';
+import {Die, GameState, Player, PlayerName} from './models';
 import {
-    upperScore,
+    getAvailableOptions,
     hasPlayerUpperBonus,
     initDice,
     initPlayers,
+    isUpperBonusAchievable,
     rollDice,
     toggleLock,
     totalLowerScore,
     totalScore,
     totalUpperScore,
+    upperScore,
 } from './logic';
 
 function TableHeader() {
@@ -42,10 +44,10 @@ function TableHeader() {
 }
 
 function Scores(props: { player: Player }) {
-    const { player } = props;
+    const {player} = props;
     return (
         <>
-            <div></div>
+            <div/>
             <div>{player.ones}</div>
             <div>{player.twos}</div>
             <div>{player.threes}</div>
@@ -53,9 +55,9 @@ function Scores(props: { player: Player }) {
             <div>{player.fives}</div>
             <div>{player.sixes}</div>
             <div>{upperScore(player)}</div>
-            <div>{hasPlayerUpperBonus(player) ? '35' : ''}</div>
+            <div>{isUpperBonusAchievable(player) ? (hasPlayerUpperBonus(player) ? '35' : '') : '0'}</div>
             <div>{totalUpperScore(player)}</div>
-            <div></div>
+            <div/>
             <div>{player.threeOfAKind}</div>
             <div>{player.fourOfAKind}</div>
             <div>{player.fullHouse}</div>
@@ -71,7 +73,7 @@ function Scores(props: { player: Player }) {
 }
 
 function ScoreBoard(props: { players: Player[] }) {
-    const { players } = props;
+    const {players} = props;
     return (
         <div
             className="grid grid-flow-col bg-gray-300"
@@ -79,9 +81,9 @@ function ScoreBoard(props: { players: Player[] }) {
                 gridTemplateRows: 'repeat(21, minmax(0, 1fr))',
             }}
         >
-            <TableHeader />
+            <TableHeader/>
             {players.map((p) => (
-                <Scores key={p.name} player={p} />
+                <Scores key={p.name} player={p}/>
             ))}
         </div>
     );
@@ -91,7 +93,7 @@ function Dice(props: {
     dice: Die[];
     onDieLockChange: (index: number) => void;
 }) {
-    const { dice, onDieLockChange } = props;
+    const {dice, onDieLockChange} = props;
     if (dice === null) {
         return null;
     }
@@ -115,7 +117,8 @@ function Dice(props: {
     );
 }
 
-function PlayArea() {
+function PlayArea(props: { currentPlayer: Player }) {
+    const {currentPlayer} = props;
     const [dice, setDice] = useState<Die[]>(initDice());
     const [rollCount, setRollCount] = useState<number>(0);
 
@@ -126,6 +129,17 @@ function PlayArea() {
         setRollCount(newRollCount);
     };
 
+    const renderedOptions = getAvailableOptions(currentPlayer, dice)
+        .map(option => {
+            return <button
+                className="bg-green-400"
+                onClick={(event) => {
+                    event.preventDefault();
+                }}
+            >
+                {option}
+            </button>
+        })
     return (
         <div>
             <button
@@ -142,40 +156,67 @@ function PlayArea() {
                     setDice(toggleLock(dice, index));
                 }}
             />
-            <button
-                className="bg-green-400"
-                onClick={(event) => {
-                    event.preventDefault();
-                }}
-            >
-                Finish Round
-            </button>
+            {renderedOptions}
         </div>
     );
 }
 
-function ReadyState(props: { onGameStart: (playerCount: number) => void }) {
-    const [playerCount, setPlayerCount] = useState<number>(2);
+function PlayerAvatar(props: { player: PlayerName, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
+    const {player, updatePlayer, removePlayer} = props;
+    // TODO add avatar picture
+    return <div>
+        <input
+            className="bg-blue-200"
+            value={player.name}
+            onChange={(event) => {
+                event.preventDefault();
+                const value = event.target.value;
+                updatePlayer({name: value});
+            }}
+        />
+        <button className="p-2 rounded bg-red-300" onClick={(event) => {
+            event.preventDefault();
+            removePlayer();
+        }}>
+            -
+        </button>
+    </div>;
+}
+
+function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
+    const [players, setPlayers] = useState([{name: "Alice"}, {name: "Bob"}]);
+    const renderedPlayers = players.map(
+        (p, index) => <PlayerAvatar
+            key={index}
+            player={p}
+            updatePlayer={(newP) => {
+                players[index] = newP;
+                setPlayers([...players]);
+                console.log("Updated players")
+            }}
+            removePlayer={() => {
+                players.splice(index, 1);
+                setPlayers([...players]);
+                console.log("Removed player")
+            }}
+        />
+    );
     return (
-        <div>
-            <label htmlFor="player-count">Number of Players</label>
-            <input
-                id="player-count"
-                className="bg-blue-200"
-                value={playerCount}
-                onChange={(event) => {
-                    event.preventDefault();
-                    const value = event.target.value;
-                    const count = parseInt(value);
-                    if (count !== undefined) {
-                        setPlayerCount(count);
-                    }
-                }}
-            />
+        <div className="grid gap-2 justify-center">
+            {renderedPlayers}
+            <button className="py-2 px-5 bg-green-300 rounded-lg"
+                    onClick={(event) => {
+                        event.preventDefault()
+                        players.push({name: ""})
+                        setPlayers([...players]);
+                        console.log("Added player")
+                    }}>
+                +
+            </button>
             <button
                 onClick={(event) => {
                     event.preventDefault();
-                    props.onGameStart(playerCount);
+                    props.onGameStart(players);
                 }}
             >
                 Start Game
@@ -185,11 +226,12 @@ function ReadyState(props: { onGameStart: (playerCount: number) => void }) {
 }
 
 function PlayingState(props: { players: Player[] }) {
-    const { players } = props;
+    const {players} = props;
+    const [currentPlayer, setCurrentPlayer] = useState(players[0])
     return (
         <div>
-            <ScoreBoard players={players} />
-            <PlayArea />
+            <ScoreBoard players={players}/>
+            <PlayArea currentPlayer={currentPlayer}/>
         </div>
     );
 }
@@ -202,18 +244,18 @@ function App() {
     const [gameState, setGameState] = useState<GameState>('ready');
     const [players, setPlayers] = useState<Player[]>([]);
 
-    function onGameStart(playerCount: number) {
+    function onGameStart(players: PlayerName[]) {
         setGameState('playing');
-        setPlayers(initPlayers(playerCount));
+        setPlayers(initPlayers(players));
     }
 
     switch (gameState) {
         case 'ready':
-            return <ReadyState onGameStart={onGameStart} />;
+            return <ReadyState onGameStart={onGameStart}/>;
         case 'playing':
-            return <PlayingState players={players} />;
+            return <PlayingState players={players}/>;
         case 'finished':
-            return <FinishedState />;
+            return <FinishedState/>;
     }
 }
 

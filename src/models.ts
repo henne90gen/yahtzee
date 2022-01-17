@@ -1,24 +1,24 @@
 export type GameState = 'ready' | 'playing' | 'finished';
 
-export type Player = {
-    name: string;
+export type PlayerName = { name: string }
+export type PlayerState = {
+    ones: number | null;
+    twos: number | null;
+    threes: number | null;
+    fours: number | null;
+    fives: number | null;
+    sixes: number | null;
 
-    ones: number;
-    twos: number;
-    threes: number;
-    fours: number;
-    fives: number;
-    sixes: number;
+    threeOfAKind: number | null;
+    fourOfAKind: number | null;
+    fullHouse: number | null;
+    smallStraight: number | null;
+    largeStraight: number | null;
 
-    threeOfAKind: number;
-    fourOfAKind: number;
-    fullHouse: number;
-    smallStraight: number;
-    largeStraight: number;
-
-    chance: number;
-    yahtzee: number;
+    chance: number | null;
+    yahtzee: number | null;
 };
+export type Player = PlayerName & PlayerState;
 
 export type Die = {
     position: number;

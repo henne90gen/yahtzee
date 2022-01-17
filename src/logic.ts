@@ -1,21 +1,48 @@
-import { Player, Die } from './models';
+import {Die, Player, PlayerName, PlayerState} from './models';
 
-export function hasPlayerUpperBonus(player: Player): boolean {
+export function isUpperBonusAchievable(player: PlayerState): boolean {
+    if (hasPlayerUpperBonus(player)) {
+        return true;
+    }
+
+    let possibleResult = 0;
+    possibleResult += player.ones !== null ? player.ones : 5;
+    possibleResult += player.twos !== null ? player.twos : 10;
+    possibleResult += player.threes !== null ? player.threes : 15;
+    possibleResult += player.fours !== null ? player.fours : 20;
+    possibleResult += player.fives !== null ? player.fives : 25;
+    possibleResult += player.sixes !== null ? player.sixes : 30;
+    return possibleResult >= 63;
+}
+
+export function hasPlayerUpperBonus(player: PlayerState): boolean {
     return upperScore(player) >= 63;
 }
 
-export function upperScore(player: Player): number {
-    return (
-        player.ones +
-        player.twos +
-        player.threes +
-        player.fours +
-        player.fives +
-        player.sixes
-    );
+export function upperScore(player: PlayerState): number {
+    let result = 0;
+    if (player.ones !== null) {
+        result += player.ones;
+    }
+    if (player.twos !== null) {
+        result += player.twos;
+    }
+    if (player.threes !== null) {
+        result += player.threes;
+    }
+    if (player.fours !== null) {
+        result += player.fours;
+    }
+    if (player.fives !== null) {
+        result += player.fives;
+    }
+    if (player.sixes !== null) {
+        result += player.sixes;
+    }
+    return result;
 }
 
-export function totalUpperScore(player: Player): number {
+export function totalUpperScore(player: PlayerState): number {
     let result = upperScore(player);
     if (hasPlayerUpperBonus(player)) {
         result += 35;
@@ -23,42 +50,57 @@ export function totalUpperScore(player: Player): number {
     return result;
 }
 
-export function totalLowerScore(player: Player): number {
-    return (
-        player.threeOfAKind +
-        player.fourOfAKind +
-        player.fullHouse +
-        player.smallStraight +
-        player.largeStraight +
-        player.chance +
-        player.yahtzee
-    );
+export function totalLowerScore(player: PlayerState): number {
+    let result = 0;
+    if (player.threeOfAKind !== null) {
+        result += player.threeOfAKind;
+    }
+    if (player.fourOfAKind !== null) {
+        result += player.fourOfAKind;
+    }
+    if (player.fullHouse !== null) {
+        result += player.fullHouse;
+    }
+    if (player.smallStraight !== null) {
+        result += player.smallStraight;
+    }
+    if (player.largeStraight !== null) {
+        result += player.largeStraight;
+    }
+    if (player.chance !== null) {
+        result += player.chance;
+    }
+    if (player.yahtzee !== null) {
+        result += player.yahtzee;
+    }
+    return result;
 }
 
-export function totalScore(player: Player): number {
+export function totalScore(player: PlayerState): number {
     return totalLowerScore(player) + totalUpperScore(player);
 }
 
-export function initPlayers(playerCount: number): Player[] {
+export function initPlayers(playerNames: PlayerName[]): Player[] {
     const players: Player[] = [];
-    for (let i = 0; i < playerCount; i++) {
+    for (let playerName of playerNames) {
         players.push({
-            name: Math.random().toFixed(2),
-            ones: 0,
-            twos: 0,
-            threes: 0,
-            fours: 0,
-            fives: 0,
-            sixes: 0,
+            name: playerName.name,
 
-            threeOfAKind: 0,
-            fourOfAKind: 0,
-            fullHouse: 0,
-            smallStraight: 0,
-            largeStraight: 0,
+            ones: null,
+            twos: null,
+            threes: null,
+            fours: null,
+            fives: null,
+            sixes: null,
 
-            chance: 0,
-            yahtzee: 0,
+            threeOfAKind: null,
+            fourOfAKind: null,
+            fullHouse: null,
+            smallStraight: null,
+            largeStraight: null,
+
+            chance: null,
+            yahtzee: null,
         });
     }
     return players;
@@ -67,7 +109,7 @@ export function initPlayers(playerCount: number): Player[] {
 export function initDice() {
     const dice: Die[] = [];
     for (let i = 0; i < 5; i++) {
-        dice.push({ position: i, value: 0, locked: 'unlocked' });
+        dice.push({position: i, value: 0, locked: 'unlocked'});
     }
     return dice;
 }
@@ -99,4 +141,27 @@ export function toggleLock(dice: Die[], index: number) {
         result.push(dice[i]);
     }
     return result;
+}
+
+export function getAvailableOptions(player: PlayerState, dice: Die[]): string[] {
+    const options = []
+    if (dice.filter(d => d.value === 1).length > 0) {
+        options.push("ones");
+    }
+    if (dice.filter(d => d.value === 2).length > 0) {
+        options.push("twos");
+    }
+    if (dice.filter(d => d.value === 3).length > 0) {
+        options.push("threes");
+    }
+    if (dice.filter(d => d.value === 4).length > 0) {
+        options.push("fours");
+    }
+    if (dice.filter(d => d.value === 5).length > 0) {
+        options.push("fives");
+    }
+    if (dice.filter(d => d.value === 6).length > 0) {
+        options.push("sixes");
+    }
+    return options;
 }
