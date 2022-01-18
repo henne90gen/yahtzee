@@ -3,6 +3,7 @@ import './App.css';
 import {AllEndTurnOptions, Die, EndTurnOption, GameState, Player, PlayerName} from './models';
 import {
     getAvailableOptions,
+    getWinningPlayer,
     hasPlayerUpperBonus,
     initDice,
     initPlayers,
@@ -13,7 +14,8 @@ import {
     totalLowerScore,
     totalScore,
     totalUpperScore,
-    updateScore, updateScoreStrike,
+    updateScore,
+    updateScoreStrike,
     upperScore,
 } from './logic';
 
@@ -209,8 +211,9 @@ function PlayerAvatar(props: { player: PlayerName, updatePlayer: (p: PlayerName)
     </div>;
 }
 
-function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
-    const [players, setPlayers] = useState([{name: "Alice"}, {name: "Bob"}]);
+function ReadyState(props: { playerNames: PlayerName[], onGameStart: (players: PlayerName[]) => void }) {
+    const {playerNames, onGameStart} = props;
+    const [players, setPlayers] = useState(playerNames);
     const renderedPlayers = players.map(
         (p, index) => <PlayerAvatar
             key={index}
@@ -223,7 +226,6 @@ function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
             removePlayer={() => {
                 players.splice(index, 1);
                 setPlayers([...players]);
-                console.log("Removed player")
             }}
         />
     );
@@ -235,14 +237,13 @@ function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
                         event.preventDefault()
                         players.push({name: ""})
                         setPlayers([...players]);
-                        console.log("Added player")
                     }}>
                 +
             </button>
             <button
                 onClick={(event) => {
                     event.preventDefault();
-                    props.onGameStart(players);
+                    onGameStart(players);
                 }}
             >
                 Start Game
@@ -251,8 +252,8 @@ function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
     );
 }
 
-function PlayingState(props: { playerNames: PlayerName[] }) {
-    const {playerNames} = props;
+function PlayingState(props: { playerNames: PlayerName[], playerHasWon: (player: Player) => void }) {
+    const {playerNames, playerHasWon} = props;
     const [players, setPlayers] = useState(initPlayers(playerNames));
     const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
 
@@ -268,23 +269,38 @@ function PlayingState(props: { playerNames: PlayerName[] }) {
         tmp++;
         tmp %= players.length;
         setCurrentPlayerIndex(tmp);
+
+        const winningPlayer = getWinningPlayer(players);
+        if (winningPlayer !== null) {
+            playerHasWon(winningPlayer);
+        }
     }
 
     return (
         <div>
             <ScoreBoard players={players}/>
             <PlayArea currentPlayer={players[currentPlayerIndex]} endTurn={endTurn}/>
+            <button onClick={() => {
+                playerHasWon(players[currentPlayerIndex])
+            }}>
+                Current Player Wins
+            </button>
         </div>
     );
 }
 
-function FinishedState() {
-    return <div></div>;
+function FinishedState(props: { winningPlayer: Player, newGame: () => void }) {
+    const {winningPlayer, newGame} = props;
+    return <div>
+        <div>{winningPlayer.name} with {totalScore(winningPlayer)} points</div>
+        <button onClick={newGame}>New Game</button>
+    </div>;
 }
 
 function App() {
     const [gameState, setGameState] = useState<GameState>('ready');
-    const [playerNames, setPlayerNames] = useState<PlayerName[]>([]);
+    const [playerNames, setPlayerNames] = useState<PlayerName[]>([{name: "Alice"}, {name: "Bob"}]);
+    const [winningPlayer, setWinningPlayer] = useState<Player | null>(null)
 
     function onGameStart(playerNames: PlayerName[]) {
         setGameState('playing');
@@ -293,11 +309,14 @@ function App() {
 
     switch (gameState) {
         case 'ready':
-            return <ReadyState onGameStart={onGameStart}/>;
+            return <ReadyState playerNames={playerNames} onGameStart={onGameStart}/>;
         case 'playing':
-            return <PlayingState playerNames={playerNames}/>;
+            return <PlayingState playerNames={playerNames} playerHasWon={(player) => {
+                setWinningPlayer(player);
+                setGameState("finished");
+            }}/>;
         case 'finished':
-            return <FinishedState/>;
+            return <FinishedState winningPlayer={winningPlayer!} newGame={() => setGameState("ready")}/>;
     }
 }
 

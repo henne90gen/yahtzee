@@ -341,3 +341,43 @@ export function updateScoreStrike(player: PlayerState, option: EndTurnOption) {
             break;
     }
 }
+
+function isDonePlaying(player: Player): boolean {
+    return player.ones !== null &&
+        player.twos !== null &&
+        player.threes !== null &&
+        player.fours !== null &&
+        player.fives !== null &&
+        player.sixes !== null &&
+        player.threeOfAKind !== null &&
+        player.fourOfAKind !== null &&
+        player.fullHouse !== null &&
+        player.smallStraight !== null &&
+        player.largeStraight !== null &&
+        player.chance !== null &&
+        player.yahtzee !== null;
+}
+
+export function getWinningPlayer(players: Player[]): Player | null {
+    let allDone = true;
+    for (let player of players) {
+        if (!isDonePlaying(player)) {
+            allDone = false;
+            break;
+        }
+    }
+    if (!allDone) {
+        return null;
+    }
+
+    let maxTotalScore = 0;
+    let winningPlayer = null;
+    for (let player of players) {
+        const score = totalScore(player);
+        if (score > maxTotalScore) {
+            maxTotalScore = score;
+            winningPlayer = player;
+        }
+    }
+    return winningPlayer;
+}
