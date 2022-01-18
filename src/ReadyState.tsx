@@ -1,12 +1,16 @@
 import {PlayerName} from "./models";
 import React, {useState} from "react";
 
-function PlayerAvatar(props: { player: PlayerName, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
-    const {player, updatePlayer, removePlayer} = props;
+function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
+    const {player, invalid, updatePlayer, removePlayer} = props;
     // TODO add avatar picture
+    let bgColor = "bg-blue-200";
+    if (invalid) {
+        bgColor = "bg-red-200";
+    }
     return <div>
         <input
-            className="bg-blue-200"
+            className={bgColor}
             value={player.name}
             onChange={(event) => {
                 event.preventDefault();
@@ -26,18 +30,57 @@ function PlayerAvatar(props: { player: PlayerName, updatePlayer: (p: PlayerName)
 export default function ReadyState(props: { playerNames: PlayerName[], onGameStart: (players: PlayerName[]) => void }) {
     const {playerNames, onGameStart} = props;
     const [players, setPlayers] = useState(playerNames);
+    const [invalidPlayerNames, setInvalidPlayerNames] = useState<Set<number>>(new Set());
+
+    function startGameClicked() {
+        let allNamesValid = true;
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].name === "") {
+                addInvalidName(i);
+                allNamesValid = false;
+            }
+        }
+        if (!allNamesValid) {
+            return;
+        }
+
+        onGameStart(players);
+    }
+
+    function addInvalidName(index: number) {
+        console.log("Adding", index);
+        setInvalidPlayerNames(s => {
+            s.add(index);
+            return new Set(s);
+        });
+    }
+
+    function removeInvalidName(index: number) {
+        console.log("Removing", index);
+        setInvalidPlayerNames(s => {
+            s.delete(index);
+            return new Set(s);
+        });
+    }
+
     const renderedPlayers = players.map(
         (p, index) => <PlayerAvatar
             key={index}
             player={p}
+            invalid={invalidPlayerNames.has(index)}
             updatePlayer={(newP) => {
                 players[index] = newP;
                 setPlayers([...players]);
-                console.log("Updated players")
+                if (newP.name === "") {
+                    addInvalidName(index);
+                } else {
+                    removeInvalidName(index);
+                }
             }}
             removePlayer={() => {
                 players.splice(index, 1);
                 setPlayers([...players]);
+                removeInvalidName(index);
             }}
         />
     );
@@ -55,7 +98,7 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
             <button
                 onClick={(event) => {
                     event.preventDefault();
-                    onGameStart(players);
+                    startGameClicked()
                 }}
             >
                 Start Game
