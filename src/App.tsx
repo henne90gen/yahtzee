@@ -1,23 +1,26 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Die, GameState, Player, PlayerName} from './models';
+import {AllEndTurnOptions, Die, EndTurnOption, GameState, Player, PlayerName} from './models';
 import {
     getAvailableOptions,
     hasPlayerUpperBonus,
     initDice,
     initPlayers,
     isUpperBonusAchievable,
+    playerCanStrike,
     rollDice,
     toggleLock,
     totalLowerScore,
     totalScore,
     totalUpperScore,
+    updateScore, updateScoreStrike,
     upperScore,
 } from './logic';
 
 function TableHeader() {
     return (
         <>
+            <div></div>
             <div>Upper Section</div>
             <div>Ones</div>
             <div>Twos</div>
@@ -47,6 +50,7 @@ function Scores(props: { player: Player }) {
     const {player} = props;
     return (
         <>
+            <div>{player.name}</div>
             <div/>
             <div>{player.ones}</div>
             <div>{player.twos}</div>
@@ -78,12 +82,12 @@ function ScoreBoard(props: { players: Player[] }) {
         <div
             className="grid grid-flow-col bg-gray-300"
             style={{
-                gridTemplateRows: 'repeat(21, minmax(0, 1fr))',
+                gridTemplateRows: 'repeat(22, minmax(0, 1fr))',
             }}
         >
             <TableHeader/>
-            {players.map((p) => (
-                <Scores key={p.name} player={p}/>
+            {players.map((p, i) => (
+                <Scores key={i} player={p}/>
             ))}
         </div>
     );
@@ -101,7 +105,7 @@ function Dice(props: {
     return (
         <div>
             {dice.map((d, i) => (
-                <div>
+                <div key={i}>
                     <input
                         type="checkbox"
                         checked={d.locked !== 'unlocked'}
@@ -117,8 +121,8 @@ function Dice(props: {
     );
 }
 
-function PlayArea(props: { currentPlayer: Player }) {
-    const {currentPlayer} = props;
+function PlayArea(props: { currentPlayer: Player, endTurn: (option: EndTurnOption, dice: Die[], strike: boolean) => void }) {
+    const {currentPlayer, endTurn} = props;
     const [dice, setDice] = useState<Die[]>(initDice());
     const [rollCount, setRollCount] = useState<number>(0);
 
@@ -129,19 +133,40 @@ function PlayArea(props: { currentPlayer: Player }) {
         setRollCount(newRollCount);
     };
 
+    function selectedOption(option: EndTurnOption, strike: boolean) {
+        endTurn(option, dice, strike);
+        setDice(initDice());
+        setRollCount(0);
+    }
+
     const renderedOptions = getAvailableOptions(currentPlayer, dice)
-        .map(option => {
+        .map((option, i) => {
             return <button
-                className="bg-green-400"
+                key={i}
+                className="bg-green-400 rounded p-2 m-2"
                 onClick={(event) => {
                     event.preventDefault();
+                    selectedOption(option, false);
                 }}
             >
                 {option}
             </button>
-        })
+        });
+    const renderedStrike = <select defaultValue="" onChange={(event) => {
+        event.preventDefault();
+        selectedOption(event.currentTarget.value as EndTurnOption, true);
+    }} className="bg-red-300 rounded p-2 m-2">
+        <option value="" disabled>Strike something</option>
+        {AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option))
+            .map((option, i) => {
+                return <option key={i} value={option}>{option}</option>
+            })
+        }
+    </select>;
+
     return (
         <div>
+            <div>{currentPlayer.name}</div>
             <button
                 className="bg-green-400"
                 disabled={rollCount === 3}
@@ -157,6 +182,7 @@ function PlayArea(props: { currentPlayer: Player }) {
                 }}
             />
             {renderedOptions}
+            {rollCount === 0 ? null : renderedStrike}
         </div>
     );
 }
@@ -225,13 +251,29 @@ function ReadyState(props: { onGameStart: (players: PlayerName[]) => void }) {
     );
 }
 
-function PlayingState(props: { players: Player[] }) {
-    const {players} = props;
-    const [currentPlayer, setCurrentPlayer] = useState(players[0])
+function PlayingState(props: { playerNames: PlayerName[] }) {
+    const {playerNames} = props;
+    const [players, setPlayers] = useState(initPlayers(playerNames));
+    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
+
+    function endTurn(option: EndTurnOption, dice: Die[], strike: boolean) {
+        if (strike) {
+            updateScoreStrike(players[currentPlayerIndex], option)
+        } else {
+            updateScore(players[currentPlayerIndex], option, dice);
+        }
+        setPlayers(Array.of(...players));
+
+        let tmp = currentPlayerIndex
+        tmp++;
+        tmp %= players.length;
+        setCurrentPlayerIndex(tmp);
+    }
+
     return (
         <div>
             <ScoreBoard players={players}/>
-            <PlayArea currentPlayer={currentPlayer}/>
+            <PlayArea currentPlayer={players[currentPlayerIndex]} endTurn={endTurn}/>
         </div>
     );
 }
@@ -242,18 +284,18 @@ function FinishedState() {
 
 function App() {
     const [gameState, setGameState] = useState<GameState>('ready');
-    const [players, setPlayers] = useState<Player[]>([]);
+    const [playerNames, setPlayerNames] = useState<PlayerName[]>([]);
 
-    function onGameStart(players: PlayerName[]) {
+    function onGameStart(playerNames: PlayerName[]) {
         setGameState('playing');
-        setPlayers(initPlayers(players));
+        setPlayerNames(playerNames);
     }
 
     switch (gameState) {
         case 'ready':
             return <ReadyState onGameStart={onGameStart}/>;
         case 'playing':
-            return <PlayingState players={players}/>;
+            return <PlayingState playerNames={playerNames}/>;
         case 'finished':
             return <FinishedState/>;
     }

@@ -21,7 +21,34 @@ export type PlayerState = {
 export type Player = PlayerName & PlayerState;
 
 export type Die = {
-    position: number;
     value: number;
     locked: 'unlocked' | 'locked' | 'permanently-locked';
 };
+
+export type EndTurnOption =
+    "ones"
+    | "twos"
+    | "threes"
+    | "fours"
+    | "fives"
+    | "sixes"
+    | "threeOfAKind"
+    | "fourOfAKind"
+    | "fullHouse"
+    | "smallStraight"
+    | "largeStraight"
+    | "yahtzee"
+    | "chance";
+export const AllEndTurnOptions: EndTurnOption[] = ["ones"
+    , "twos"
+    , "threes"
+    , "fours"
+    , "fives"
+    , "sixes"
+    , "threeOfAKind"
+    , "fourOfAKind"
+    , "fullHouse"
+    , "smallStraight"
+    , "largeStraight"
+    , "yahtzee"
+    , "chance"];
