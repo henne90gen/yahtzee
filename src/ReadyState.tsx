@@ -4,26 +4,37 @@ import React, {useState} from "react";
 function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
     const {player, invalid, updatePlayer, removePlayer} = props;
     // TODO add avatar picture
-    let bgColor = "bg-blue-200";
+    let bgColor = "bg-blue-200 ";
     if (invalid) {
-        bgColor = "bg-red-200";
+        bgColor = "bg-red-200 ";
     }
+
+    function getInvalidNameMessage() {
+        if (invalid) {
+            return <div className="text-xs text-red-700 pt-0.5">Invalid name</div>;
+        }
+        return "";
+    }
+
     return <div>
-        <input
-            className={bgColor}
-            value={player.name}
-            onChange={(event) => {
+        <div className="grid gap-3" style={{gridTemplateColumns: "80% 15%"}}>
+            <input
+                className={bgColor + "px-3 rounded"}
+                value={player.name}
+                onChange={(event) => {
+                    event.preventDefault();
+                    const value = event.target.value;
+                    updatePlayer({name: value});
+                }}
+            />
+            <button className="p-2 rounded bg-red-300" onClick={(event) => {
                 event.preventDefault();
-                const value = event.target.value;
-                updatePlayer({name: value});
-            }}
-        />
-        <button className="p-2 rounded bg-red-300" onClick={(event) => {
-            event.preventDefault();
-            removePlayer();
-        }}>
-            -
-        </button>
+                removePlayer();
+            }}>
+                -
+            </button>
+        </div>
+        {getInvalidNameMessage()}
     </div>;
 }
 
@@ -48,7 +59,6 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
     }
 
     function addInvalidName(index: number) {
-        console.log("Adding", index);
         setInvalidPlayerNames(s => {
             s.add(index);
             return new Set(s);
@@ -56,7 +66,6 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
     }
 
     function removeInvalidName(index: number) {
-        console.log("Removing", index);
         setInvalidPlayerNames(s => {
             s.delete(index);
             return new Set(s);
@@ -85,24 +94,32 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
         />
     );
     return (
-        <div className="grid gap-2 justify-center">
-            {renderedPlayers}
-            <button className="py-2 px-5 bg-green-300 rounded-lg"
-                    onClick={(event) => {
-                        event.preventDefault()
-                        players.push({name: ""})
-                        setPlayers([...players]);
-                    }}>
-                +
-            </button>
-            <button
-                onClick={(event) => {
-                    event.preventDefault();
-                    startGameClicked()
-                }}
+        <div className="pt-10 sm:pt-14 md:pt-20 flex justify-center">
+            <div
+                className="grid gap-3 justify-center lg:w-1/2 xl:w-1/3 rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
+                style={{gridTemplateColumns: "1fr"}}
             >
-                Start Game
-            </button>
+                {renderedPlayers}
+                <div className="grid gap-4 pt-3" style={{gridTemplateColumns:"25% 70%"}}>
+                    <button className="py-2 px-5 bg-blue-400 rounded-lg text-white"
+                            onClick={(event) => {
+                                event.preventDefault()
+                                players.push({name: ""})
+                                setPlayers([...players]);
+                            }}>
+                        +
+                    </button>
+                    <button
+                        className="py-2 px-3 bg-green-500 rounded-lg text-white"
+                        onClick={(event) => {
+                            event.preventDefault();
+                            startGameClicked()
+                        }}
+                    >
+                        Start Game
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
