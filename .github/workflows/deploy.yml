@@ -1,0 +1,35 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Docker Login
+        env:
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: docker login -u henne90gen -p $DOCKER_PASSWORD
+
+      - name: Build
+        run: docker build . --tag henne90gen/yahtzee:latest
+
+      - name: Upload Docker Image
+        run: docker push henne90gen/yahtzee -a
+
+#      - name: Restart Deployment
+#        env:
+#          SSH_KEY: ${{secrets.SSH_KEY}}
+#        run: |
+#          echo "$SSH_KEY" > ssh.key
+#          chmod 600 ssh.key
+#          mkdir -p ~/.ssh && ssh-keyscan -H henne90gen.dynu.com > ~/.ssh/known_hosts
+#          ssh -i ssh.key henne@henne90gen.dynu.com "kubectl rollout restart deployment/yahtzee-deployment"
