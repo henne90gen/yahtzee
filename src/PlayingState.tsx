@@ -76,7 +76,7 @@ function ScoreBoard(props: { players: Player[] }) {
     const {players} = props;
     return (
         <div
-            className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg"
+            className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg shadow-lg"
             style={{
                 gridTemplateRows: '4em repeat(21, minmax(0, 1fr))',
                 gridTemplateColumns: '10em',
@@ -197,7 +197,7 @@ function PlayArea(props: { currentPlayer: Player, endTurn: (option: EndTurnOptio
     </>
 
     return (
-        <div className="grid gap-2 justify-items-center justify-center bg-white w-full mt-3 py-4 px-3 rounded md:rounded-lg">
+        <div className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-2xl">{currentPlayer.name}</div>
             <button
                 className="bg-green-500 w-48 py-2 rounded-xl text-white"

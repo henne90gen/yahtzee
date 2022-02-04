@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import './App.css';
 import {GameState, Player, PlayerName} from './models';
 import ReadyState from "./ReadyState";
 import PlayingState from "./PlayingState";
@@ -19,10 +18,12 @@ function App() {
         case 'ready':
             return <ReadyState playerNames={playerNames} onGameStart={onGameStart}/>;
         case 'playing':
-            return <PlayingState playerNames={playerNames} playerHasWon={(player) => {
-                setWinningPlayer(player);
-                setGameState("finished");
-            }}/>;
+            return <PlayingState
+                playerNames={playerNames}
+                playerHasWon={(player) => {
+                    setWinningPlayer(player);
+                    setGameState("finished");
+                }}/>;
         case 'finished':
             return <FinishedState winningPlayer={winningPlayer!} newGame={() => setGameState("ready")}/>;
     }
