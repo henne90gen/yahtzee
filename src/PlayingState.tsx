@@ -1,5 +1,5 @@
 import {AllEndTurnOptions, Die, EndTurnOption, Player, PlayerName} from "./models";
-import React, {useState} from "react";
+import React, {ReactElement, useState} from "react";
 import {
     getAvailableOptions,
     getWinningPlayer, hasPlayerUpperBonus,
@@ -90,6 +90,65 @@ function ScoreBoard(props: { players: Player[] }) {
     );
 }
 
+function topLeft(value: number) {
+    return value === 2 || value === 4 || value === 5 || value === 6;
+}
+
+function topRight(value: number) {
+    return value === 3 || value === 4 || value === 5 || value === 6;
+}
+
+function middleLeft(value: number) {
+    return value === 6;
+}
+
+function middle(value: number) {
+    return value === 1 || value === 3 || value === 5;
+}
+
+function middleRight(value: number) {
+    return value === 6;
+}
+
+function bottomLeft(value: number) {
+    return value === 3 || value === 4 || value === 5 || value === 6;
+}
+
+function bottomRight(value: number) {
+    return value === 2 || value === 4 || value === 5 || value === 6;
+}
+
+function DieSvg(props: { value: number }) {
+    const {value} = props;
+    const dots: ReactElement[] = [];
+    if (topLeft(value)) {
+        dots.push(<circle key={1} cx={25} cy={25} r={10} fill="black"/>)
+    }
+    if (topRight(value)) {
+        dots.push(<circle key={2} cx={75} cy={25} r={10} fill="black"/>)
+    }
+    if (middleLeft(value)) {
+        dots.push(<circle key={3} cx={25} cy={50} r={10} fill="black"/>)
+    }
+    if (middle(value)) {
+        dots.push(<circle key={4} cx={50} cy={50} r={10} fill="black"/>)
+    }
+    if (middleRight(value)) {
+        dots.push(<circle key={5} cx={75} cy={50} r={10} fill="black"/>)
+    }
+    if (bottomLeft(value)) {
+        dots.push(<circle key={6} cx={25} cy={75} r={10} fill="black"/>)
+    }
+    if (bottomRight(value)) {
+        dots.push(<circle key={7} cx={75} cy={75} r={10} fill="black"/>)
+    }
+    return <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24">
+        <path d="M 10 5 H 90 A 5 5 0 0 1 95 10 V 90 A 5 5 0 0 1 90 95 H 10 A 5 5 0 0 1 5 90 V 10 A 5 5 0 0 1 10 5"
+              fill="none" stroke="black"/>
+        {dots}
+    </svg>;
+}
+
 function Dice(props: {
     dice: Die[];
     onDieLockChange: (index: number) => void;
@@ -100,9 +159,9 @@ function Dice(props: {
     }
 
     return (
-        <div>
+        <div className="grid grid-cols-5">
             {dice.map((d, i) => (
-                <div key={i}>
+                <div key={i} className="px-2">
                     <input
                         type="checkbox"
                         checked={d.locked !== 'unlocked'}
@@ -111,7 +170,7 @@ function Dice(props: {
                             onDieLockChange(i);
                         }}
                     />
-                    {d.value === 0 ? '?' : d.value}
+                    {d.value === 0 ? '?' : <DieSvg value={d.value}/>}
                 </div>
             ))}
         </div>
@@ -197,7 +256,8 @@ function PlayArea(props: { currentPlayer: Player, endTurn: (option: EndTurnOptio
     </>
 
     return (
-        <div className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
+        <div
+            className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-2xl">{currentPlayer.name}</div>
             <button
                 className="bg-green-500 w-48 py-2 rounded-xl text-white"
