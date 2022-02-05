@@ -118,33 +118,47 @@ function bottomRight(value: number) {
     return value === 2 || value === 4 || value === 5 || value === 6;
 }
 
-function DieSvg(props: { value: number }) {
-    const {value} = props;
+function DieSvg(props: { die: Die, onDieLockChange: () => void }) {
+    const {die, onDieLockChange} = props;
+    const {value, locked} = die;
     const dots: ReactElement[] = [];
+
+    let color = "black";
+    if (locked === "locked") {
+        // TODO use a more beautiful shade of blue
+        color = "blue";
+    } else if (locked === "permanently-locked") {
+        color = "gray";
+    }
+
     if (topLeft(value)) {
-        dots.push(<circle key={1} cx={25} cy={25} r={10} fill="black"/>)
+        dots.push(<circle key={1} cx={25} cy={25} r={10} fill={color}/>)
     }
     if (topRight(value)) {
-        dots.push(<circle key={2} cx={75} cy={25} r={10} fill="black"/>)
+        dots.push(<circle key={2} cx={75} cy={25} r={10} fill={color}/>)
     }
     if (middleLeft(value)) {
-        dots.push(<circle key={3} cx={25} cy={50} r={10} fill="black"/>)
+        dots.push(<circle key={3} cx={25} cy={50} r={10} fill={color}/>)
     }
     if (middle(value)) {
-        dots.push(<circle key={4} cx={50} cy={50} r={10} fill="black"/>)
+        dots.push(<circle key={4} cx={50} cy={50} r={10} fill={color}/>)
     }
     if (middleRight(value)) {
-        dots.push(<circle key={5} cx={75} cy={50} r={10} fill="black"/>)
+        dots.push(<circle key={5} cx={75} cy={50} r={10} fill={color}/>)
     }
     if (bottomLeft(value)) {
-        dots.push(<circle key={6} cx={25} cy={75} r={10} fill="black"/>)
+        dots.push(<circle key={6} cx={25} cy={75} r={10} fill={color}/>)
     }
     if (bottomRight(value)) {
-        dots.push(<circle key={7} cx={75} cy={75} r={10} fill="black"/>)
+        dots.push(<circle key={7} cx={75} cy={75} r={10} fill={color}/>)
     }
-    return <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24">
+
+    return <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24" onClick={(event => {
+        event.preventDefault();
+        onDieLockChange();
+    })}>
         <path d="M 10 5 H 90 A 5 5 0 0 1 95 10 V 90 A 5 5 0 0 1 90 95 H 10 A 5 5 0 0 1 5 90 V 10 A 5 5 0 0 1 10 5"
-              fill="none" stroke="black"/>
+              fill="white" stroke={color}/>
         {dots}
     </svg>;
 }
@@ -162,15 +176,7 @@ function Dice(props: {
         <div className="grid grid-cols-5">
             {dice.map((d, i) => (
                 <div key={i} className="px-2">
-                    <input
-                        type="checkbox"
-                        checked={d.locked !== 'unlocked'}
-                        disabled={d.locked === 'permanently-locked'}
-                        onChange={() => {
-                            onDieLockChange(i);
-                        }}
-                    />
-                    {d.value === 0 ? '?' : <DieSvg value={d.value}/>}
+                    {d.value === 0 ? '?' : <DieSvg die={d} onDieLockChange={() => onDieLockChange(i)}/>}
                 </div>
             ))}
         </div>
@@ -255,13 +261,18 @@ function PlayArea(props: { currentPlayer: Player, endTurn: (option: EndTurnOptio
         />
     </>
 
+    const rollButtonDisabled = rollCount === 3;
+    let rollButtonColor = "bg-green-500";
+    if (rollButtonDisabled) {
+        rollButtonColor = "bg-green-300";
+    }
     return (
         <div
             className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-2xl">{currentPlayer.name}</div>
             <button
-                className="bg-green-500 w-48 py-2 rounded-xl text-white"
-                disabled={rollCount === 3}
+                className={rollButtonColor + " w-48 py-2 rounded-xl text-white"}
+                disabled={rollButtonDisabled}
                 onClick={onRollDiceClick}
             >
                 Roll Dice
@@ -296,14 +307,9 @@ export default function PlayingState(props: { playerNames: PlayerName[], playerH
     }
 
     return (
-        <div className="flex flex-col items-center p-2 sm:p-0 sm:pt-5 md:pt-10">
+        <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <ScoreBoard players={players}/>
             <PlayArea currentPlayer={players[currentPlayerIndex]} endTurn={endTurn}/>
-            <button className="bg-pink-500 text-white px-2 py-1" onClick={() => {
-                playerHasWon(players[currentPlayerIndex])
-            }}>
-                Debug: Current Player Wins
-            </button>
         </div>
     );
 }
