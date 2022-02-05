@@ -1,31 +1,20 @@
-import React, {useState} from 'react';
-import {GameState, Player, PlayerName} from './models';
+import React from 'react';
 import ReadyState from "./ReadyState";
 import PlayingState from "./PlayingState";
 import FinishedState from "./FinishedState";
+import {useSelector} from "react-redux";
+import {RootState} from "./store";
 
 function App() {
-    const [gameState, setGameState] = useState<GameState>('ready');
-    const [playerNames, setPlayerNames] = useState<PlayerName[]>([{name: "Alice"}, {name: "Bob"}]);
-    const [winningPlayer, setWinningPlayer] = useState<Player | null>(null)
-
-    function onGameStart(playerNames: PlayerName[]) {
-        setGameState('playing');
-        setPlayerNames(playerNames);
-    }
+    const gameState = useSelector((state: RootState) => state.game.currentState);
 
     switch (gameState) {
         case 'ready':
-            return <ReadyState playerNames={playerNames} onGameStart={onGameStart}/>;
+            return <ReadyState/>;
         case 'playing':
-            return <PlayingState
-                playerNames={playerNames}
-                playerHasWon={(player) => {
-                    setWinningPlayer(player);
-                    setGameState("finished");
-                }}/>;
+            return <PlayingState/>;
         case 'finished':
-            return <FinishedState winningPlayer={winningPlayer!} newGame={() => setGameState("ready")}/>;
+            return <FinishedState/>;
     }
 }
 

@@ -1,5 +1,15 @@
 import {PlayerName} from "./models";
-import React, {useState} from "react";
+import React from "react";
+import {useSelector, useDispatch} from 'react-redux'
+import {
+    addInvalidPlayerName,
+    addPlayerName,
+    removeInvalidPlayerName,
+    removePlayerName,
+    RootState,
+    startGame,
+    updatePlayerName
+} from "./store";
 
 function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
     const {player, invalid, updatePlayer, removePlayer} = props;
@@ -38,16 +48,15 @@ function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlaye
     </div>;
 }
 
-export default function ReadyState(props: { playerNames: PlayerName[], onGameStart: (players: PlayerName[]) => void }) {
-    const {playerNames, onGameStart} = props;
-    const [players, setPlayers] = useState(playerNames);
-    const [invalidPlayerNames, setInvalidPlayerNames] = useState<Set<number>>(new Set());
+export default function ReadyState() {
+    const state = useSelector((state: RootState) => state.game.readyState);
+    const dispatch = useDispatch();
 
     function startGameClicked() {
         let allNamesValid = true;
-        for (let i = 0; i < players.length; i++) {
-            if (players[i].name === "") {
-                addInvalidName(i);
+        for (let i = 0; i < state.names.length; i++) {
+            if (state.names[i].name === "") {
+                addInvalidPlayerName(i);
                 allNamesValid = false;
             }
         }
@@ -55,41 +64,27 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
             return;
         }
 
-        onGameStart(players);
+        dispatch(startGame())
     }
 
-    function addInvalidName(index: number) {
-        setInvalidPlayerNames(s => {
-            s.add(index);
-            return new Set(s);
-        });
-    }
-
-    function removeInvalidName(index: number) {
-        setInvalidPlayerNames(s => {
-            s.delete(index);
-            return new Set(s);
-        });
-    }
-
-    const renderedPlayers = players.map(
+    const renderedPlayers = state.names.map(
         (p, index) => <PlayerAvatar
             key={index}
             player={p}
-            invalid={invalidPlayerNames.has(index)}
+            invalid={state.invalidNames.has(index)}
             updatePlayer={(newP) => {
-                players[index] = newP;
-                setPlayers([...players]);
+                dispatch(updatePlayerName({
+                    index, player: newP
+                }))
                 if (newP.name === "") {
-                    addInvalidName(index);
+                    dispatch(addInvalidPlayerName(index))
                 } else {
-                    removeInvalidName(index);
+                    dispatch(removeInvalidPlayerName(index))
                 }
             }}
             removePlayer={() => {
-                players.splice(index, 1);
-                setPlayers([...players]);
-                removeInvalidName(index);
+                dispatch(removePlayerName(index))
+                dispatch(removeInvalidPlayerName(index));
             }}
         />
     );
@@ -100,12 +95,11 @@ export default function ReadyState(props: { playerNames: PlayerName[], onGameSta
                 style={{gridTemplateColumns: "1fr"}}
             >
                 {renderedPlayers}
-                <div className="grid gap-4 pt-3" style={{gridTemplateColumns:"25% 70%"}}>
+                <div className="grid gap-4 pt-3" style={{gridTemplateColumns: "25% 70%"}}>
                     <button className="py-2 px-5 bg-blue-400 rounded-lg text-white"
                             onClick={(event) => {
                                 event.preventDefault()
-                                players.push({name: ""})
-                                setPlayers([...players]);
+                                dispatch(addPlayerName({name: ""}))
                             }}>
                         +
                     </button>
