@@ -1,8 +1,8 @@
-import {AllEndTurnOptions, Die, EndTurnOption, Player} from "./models";
+import {AllEndTurnOptions, Die, EndTurnOption, Player} from "../models";
 import React, {ReactElement} from "react";
-import {getAvailableOptions, playerCanStrike} from "./logic";
-import ScoreBoard from "./ScoreBoard";
-import {doDiceRoll, endTurn, onDieLockChange, RootState} from "./store";
+import {getAvailableOptions, playerCanStrike} from "../logic";
+import ScoreBoard from "../ScoreBoard";
+import {doDiceRoll, endGame, endTurn, onDieLockChange, RootState} from "../store";
 import {useDispatch, useSelector} from "react-redux";
 
 function topLeft(value: number) {
@@ -192,11 +192,21 @@ function PlayArea() {
 }
 
 export default function PlayingState() {
+    const dispatch = useDispatch();
     const players = useSelector((state: RootState) => state.game.players);
     return (
         <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <PlayArea/>
             <ScoreBoard players={players}/>
+            <div
+                className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
+                <button
+                    className="bg-red-300 px-3 py-2 rounded text-gray-700"
+                    onClick={() => dispatch(endGame())}
+                >
+                    End Game
+                </button>
+            </div>
         </div>
     );
 }

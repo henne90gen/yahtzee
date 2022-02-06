@@ -1,12 +1,14 @@
-import {totalScore} from "./logic";
+import {totalScore} from "../logic";
 import React from "react";
-import ScoreBoard from "./ScoreBoard";
+import ScoreBoard from "../ScoreBoard";
 import {useDispatch, useSelector} from "react-redux";
-import {newGame, RootState} from "./store";
+import {newGame, RootState} from "../store";
 
 function WinnerCard() {
     const dispatch = useDispatch();
-    const winningPlayer = useSelector((state: RootState) => state.game.winningPlayer!)
+    const players = useSelector((state: RootState) => state.game.players)
+    const winningPlayerIndex = useSelector((state: RootState) => state.game.winningPlayerIndex!)
+    const winningPlayer = players[winningPlayerIndex];
     return <div>
         <div>{winningPlayer.name} with {totalScore(winningPlayer)} points</div>
         <button onClick={() => dispatch(newGame())}>New Game</button>

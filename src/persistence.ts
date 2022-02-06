@@ -1,20 +1,20 @@
-import {AnyAction, Dispatch, MiddlewareAPI} from "@reduxjs/toolkit";
+import {Dispatch, MiddlewareAPI} from "@reduxjs/toolkit";
 import {GameData, initialState} from "./store";
 
 const GAME_STATE_KEY = "yahtzee-game-state"
 
-export function loadFromLocalStorage() {
+export function loadFromLocalStorage(): { game: GameData } {
     try {
         const serialisedState = localStorage.getItem(GAME_STATE_KEY);
         if (serialisedState === null) {
-            return initialState();
+            return {game: initialState()};
         }
         const result = JSON.parse(serialisedState);
         // TODO check that all properties are present, otherwise create a fresh initial state
         return result;
     } catch (e) {
         console.warn(e);
-        return initialState();
+        return {game: initialState()};
     }
 }
 
@@ -27,7 +27,7 @@ export function saveToLocalStorage(state: { game: GameData }) {
     }
 }
 
-export const localStorageMiddleware = (api: MiddlewareAPI<Dispatch<AnyAction>, { game: GameData }>) => (next: Dispatch) => (action: any) => {
+export const localStorageMiddleware = (api: MiddlewareAPI<Dispatch, { game: GameData }>) => (next: Dispatch) => (action: any) => {
     const result = next(action);
     saveToLocalStorage(api.getState());
     return result;

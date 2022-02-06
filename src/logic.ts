@@ -358,7 +358,20 @@ function isDonePlaying(player: Player): boolean {
         player.yahtzee !== null;
 }
 
-export function getWinningPlayer(players: Player[]): Player | null {
+export function getLeadingPlayerIndex(players: Player[]): number | null {
+    let maxTotalScore = -1;
+    let winningPlayerIndex = null;
+    for (let i = 0; i < players.length; i++) {
+        const score = totalScore(players[i]);
+        if (score > maxTotalScore) {
+            maxTotalScore = score;
+            winningPlayerIndex = i;
+        }
+    }
+    return winningPlayerIndex;
+}
+
+export function getWinningPlayerIndex(players: Player[]): number | null {
     let allDone = true;
     for (let player of players) {
         if (!isDonePlaying(player)) {
@@ -370,14 +383,22 @@ export function getWinningPlayer(players: Player[]): Player | null {
         return null;
     }
 
-    let maxTotalScore = 0;
-    let winningPlayer = null;
-    for (let player of players) {
-        const score = totalScore(player);
-        if (score > maxTotalScore) {
-            maxTotalScore = score;
-            winningPlayer = player;
+    return getLeadingPlayerIndex(players)
+}
+
+export function removeIndexAndUpdateLaterIndices(array:number[], index:number) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === index) {
+            array.splice(i, 1);
+            break
         }
     }
-    return winningPlayer;
+
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] > index) {
+            array[i]--;
+        }
+    }
+
+    return array
 }

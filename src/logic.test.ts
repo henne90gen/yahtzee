@@ -1,4 +1,4 @@
-import {getAvailableOptions, updateScore} from "./logic";
+import {getAvailableOptions, removeIndexAndUpdateLaterIndices, updateScore} from "./logic";
 import {Die} from "./models";
 
 function d(v: number): Die {
@@ -134,5 +134,18 @@ describe("updateScore", () => {
     it("updates chance correctly", () => {
         const player = updateScore(p({}), "chance", [d(1), d(2), d(3), d(4), d(6)])
         expect(player.chance).toEqual(16);
+    });
+});
+
+describe("removeIndexAndUpdateLaterIndices", () => {
+    it("removes element correctly", () => {
+        const a = [2, 3, 4];
+        const result = removeIndexAndUpdateLaterIndices(a, 4);
+        expect(result).toEqual([2, 3])
+    });
+    it("removes middle element correctly", () => {
+        const a = [2, 3, 4];
+        const result = removeIndexAndUpdateLaterIndices(a, 3);
+        expect(result).toEqual([2, 3]);
     });
 });

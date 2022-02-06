@@ -1,7 +1,7 @@
 import React from 'react';
-import ReadyState from "./ReadyState";
-import PlayingState from "./PlayingState";
-import FinishedState from "./FinishedState";
+import ReadyState from "./game_states/ReadyState";
+import PlayingState from "./game_states/PlayingState";
+import FinishedState from "./game_states/FinishedState";
 import {useSelector} from "react-redux";
 import {RootState} from "./store";
 

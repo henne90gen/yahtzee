@@ -1,6 +1,15 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Die, EndTurnOption, GameState, Player, PlayerName} from "./models";
-import {getWinningPlayer, initDice, initPlayers, rollDice, toggleLock, updateScore, updateScoreStrike} from "./logic";
+import {
+    getLeadingPlayerIndex,
+    getWinningPlayerIndex,
+    initDice,
+    initPlayers, removeIndexAndUpdateLaterIndices,
+    rollDice,
+    toggleLock,
+    updateScore,
+    updateScoreStrike
+} from "./logic";
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
 import {loadFromLocalStorage, localStorageMiddleware} from "./persistence";
 
@@ -8,29 +17,29 @@ export interface GameData {
     currentState: GameState
     readyState: {
         names: PlayerName[]
-        invalidNames: Set<number>
+        invalidNames: number[]
     }
     players: Player[]
     currentPlayerIndex: number,
     dice: Die[]
     rollCount: number
-    winningPlayer: null | Player
+    winningPlayerIndex: number
 }
 
 export function initialState(): GameData {
     return {
-        readyState: {names: [{name: "Alice"}, {name: "Bob"}], invalidNames: new Set<number>()},
+        readyState: {names: [{name: "Alice"}, {name: "Bob"}], invalidNames: []},
         currentState: "ready",
         players: [],
         currentPlayerIndex: 0,
-        winningPlayer: null,
+        winningPlayerIndex: 0,
         dice: initDice(),
         rollCount: 0,
     }
 }
 
 interface GameReducers {
-    [K: string]: CaseReducer<any, any>
+    [K: string]: CaseReducer<GameData, any>
 
     addPlayerName: CaseReducer<GameData, PayloadAction<PlayerName>>
     removePlayerName: CaseReducer<GameData, PayloadAction<number>>
@@ -39,7 +48,7 @@ interface GameReducers {
     removeInvalidPlayerName: CaseReducer<GameData, PayloadAction<number>>
     startGame: CaseReducer<GameData>
     newGame: CaseReducer<GameData>
-    playerHasWon: CaseReducer<GameData, PayloadAction<Player>>
+    endGame: CaseReducer<GameData>
     endTurn: CaseReducer<GameData, PayloadAction<{ option: EndTurnOption, dice: Die[], strike: boolean }>>
     doDiceRoll: CaseReducer<GameData>
     onDieLockChange: CaseReducer<GameData, PayloadAction<number>>
@@ -59,10 +68,15 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.readyState.names[action.payload.index] = action.payload.player;
         },
         addInvalidPlayerName: (state, action: PayloadAction<number>) => {
-            state.readyState.invalidNames.add(action.payload)
+            for (let i of state.readyState.invalidNames) {
+                if (i === action.payload) {
+                    return
+                }
+            }
+            state.readyState.invalidNames.push(action.payload)
         },
         removeInvalidPlayerName: (state, action: PayloadAction<number>) => {
-            state.readyState.invalidNames.delete(action.payload)
+            state.readyState.invalidNames = removeIndexAndUpdateLaterIndices(state.readyState.invalidNames, action.payload);
         },
         startGame: (state) => {
             state.currentState = "playing";
@@ -70,13 +84,15 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         },
         newGame: (state) => {
             state.currentState = "ready";
-            state.readyState.invalidNames = new Set<number>();
-            state.winningPlayer = null;
+            state.readyState.invalidNames = [];
+            state.winningPlayerIndex = 0;
             state.rollCount = 0;
             state.currentPlayerIndex = 0;
         },
-        playerHasWon: (state, action: PayloadAction<Player>) => {
-            state.winningPlayer = action.payload;
+        endGame: (state) => {
+            const leadingPlayerIndex = getLeadingPlayerIndex(state.players);
+            state.winningPlayerIndex = leadingPlayerIndex!;
+            state.currentState = "finished";
         },
         endTurn: (state, action: PayloadAction<{ option: EndTurnOption, dice: Die[], strike: boolean }>) => {
             state.dice = initDice();
@@ -94,9 +110,9 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             tmp %= state.players.length;
             state.currentPlayerIndex = tmp;
 
-            const winningPlayer = getWinningPlayer(state.players);
+            const winningPlayer = getWinningPlayerIndex(state.players);
             if (winningPlayer !== null) {
-                state.winningPlayer = winningPlayer;
+                state.winningPlayerIndex = winningPlayer;
                 state.currentState = "finished";
             }
         },
@@ -133,6 +149,7 @@ export const {
     removeInvalidPlayerName,
     startGame,
     newGame,
+    endGame,
     endTurn,
     doDiceRoll,
     onDieLockChange,

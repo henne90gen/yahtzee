@@ -1,4 +1,4 @@
-import {PlayerName} from "./models";
+import {PlayerName} from "../models";
 import React from "react";
 import {useSelector, useDispatch} from 'react-redux'
 import {
@@ -9,7 +9,8 @@ import {
     RootState,
     startGame,
     updatePlayerName
-} from "./store";
+} from "../store";
+import t from "../translations";
 
 function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
     const {player, invalid, updatePlayer, removePlayer} = props;
@@ -21,7 +22,7 @@ function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlaye
 
     function getInvalidNameMessage() {
         if (invalid) {
-            return <div className="text-xs text-red-700 pt-0.5">Invalid name</div>;
+            return <div className="text-xs text-red-700 pt-0.5">{t("ready_InvalidNameMessage")}</div>;
         }
         return "";
     }
@@ -32,15 +33,16 @@ function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlaye
                 className={bgColor + "px-3 rounded"}
                 value={player.name}
                 onChange={(event) => {
-                    event.preventDefault();
                     const value = event.target.value;
                     updatePlayer({name: value});
                 }}
             />
-            <button className="p-2 rounded bg-red-300" onClick={(event) => {
-                event.preventDefault();
-                removePlayer();
-            }}>
+            <button
+                title={t("ready_RemovePlayerTooltip")}
+                className="p-2 rounded bg-red-300"
+                onClick={() => {
+                    removePlayer();
+                }}>
                 -
             </button>
         </div>
@@ -56,7 +58,7 @@ export default function ReadyState() {
         let allNamesValid = true;
         for (let i = 0; i < state.names.length; i++) {
             if (state.names[i].name === "") {
-                addInvalidPlayerName(i);
+                dispatch(addInvalidPlayerName(i));
                 allNamesValid = false;
             }
         }
@@ -71,7 +73,7 @@ export default function ReadyState() {
         (p, index) => <PlayerAvatar
             key={index}
             player={p}
-            invalid={state.invalidNames.has(index)}
+            invalid={state.invalidNames.find(i => i === index) !== undefined}
             updatePlayer={(newP) => {
                 dispatch(updatePlayerName({
                     index, player: newP
@@ -96,21 +98,21 @@ export default function ReadyState() {
             >
                 {renderedPlayers}
                 <div className="grid gap-4 pt-3" style={{gridTemplateColumns: "25% 70%"}}>
-                    <button className="py-2 px-5 bg-blue-400 rounded-lg text-white"
-                            onClick={(event) => {
-                                event.preventDefault()
-                                dispatch(addPlayerName({name: ""}))
-                            }}>
+                    <button
+                        title={t("ready_AddPlayerTooltip")}
+                        className="py-2 px-5 bg-blue-400 rounded-lg text-white"
+                        onClick={() => {
+                            dispatch(addPlayerName({name: ""}))
+                        }}>
                         +
                     </button>
                     <button
                         className="py-2 px-3 bg-green-500 rounded-lg text-white"
-                        onClick={(event) => {
-                            event.preventDefault();
+                        onClick={() => {
                             startGameClicked()
                         }}
                     >
-                        Start Game
+                        {t("ready_StartGame")}
                     </button>
                 </div>
             </div>
