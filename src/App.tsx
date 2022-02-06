@@ -6,9 +6,8 @@ import {useSelector} from "react-redux";
 import {RootState} from "./store";
 
 function App() {
-    const gameState = useSelector((state: RootState) => state.game.currentState);
-
-    switch (gameState) {
+    const state = useSelector((state: RootState) => state);
+    switch (state.game.currentState) {
         case 'ready':
             return <ReadyState/>;
         case 'playing':
@@ -16,6 +15,7 @@ function App() {
         case 'finished':
             return <FinishedState/>;
     }
+    return null;
 }
 
 export default App;

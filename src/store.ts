@@ -2,18 +2,31 @@ import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Die, EndTurnOption, GameState, Player, PlayerName} from "./models";
 import {getWinningPlayer, initDice, initPlayers, rollDice, toggleLock, updateScore, updateScoreStrike} from "./logic";
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
+import {loadFromLocalStorage, localStorageMiddleware} from "./persistence";
 
-interface GameData {
+export interface GameData {
+    currentState: GameState
     readyState: {
         names: PlayerName[]
         invalidNames: Set<number>
     }
-    currentState: GameState
     players: Player[]
     currentPlayerIndex: number,
-    winningPlayer: null | Player
     dice: Die[]
     rollCount: number
+    winningPlayer: null | Player
+}
+
+export function initialState(): GameData {
+    return {
+        readyState: {names: [{name: "Alice"}, {name: "Bob"}], invalidNames: new Set<number>()},
+        currentState: "ready",
+        players: [],
+        currentPlayerIndex: 0,
+        winningPlayer: null,
+        dice: initDice(),
+        rollCount: 0,
+    }
 }
 
 interface GameReducers {
@@ -34,15 +47,7 @@ interface GameReducers {
 
 const gameSlice = createSlice<GameData, GameReducers, "game">({
     name: "game",
-    initialState: {
-        readyState: {names: [{name: "Alice"}, {name: "Bob"}], invalidNames: new Set<number>()},
-        currentState: "ready",
-        players: [],
-        currentPlayerIndex: 0,
-        winningPlayer: null,
-        dice: initDice(),
-        rollCount: 0,
-    },
+    initialState: initialState(),
     reducers: {
         addPlayerName: (state, action: PayloadAction<PlayerName>) => {
             state.readyState.names.push(action.payload)
@@ -65,7 +70,10 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         },
         newGame: (state) => {
             state.currentState = "ready";
-            // TODO initialize other stuff
+            state.readyState.invalidNames = new Set<number>();
+            state.winningPlayer = null;
+            state.rollCount = 0;
+            state.currentPlayerIndex = 0;
         },
         playerHasWon: (state, action: PayloadAction<Player>) => {
             state.winningPlayer = action.payload;
@@ -108,6 +116,8 @@ export const store = configureStore({
     reducer: {
         game: gameReducer
     },
+    preloadedState: loadFromLocalStorage(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
