@@ -4,6 +4,7 @@ import {getAvailableOptions, playerCanStrike} from "../logic";
 import ScoreBoard from "../ScoreBoard";
 import {doDiceRoll, endGame, endTurn, onDieLockChange, RootState} from "../store";
 import {useDispatch, useSelector} from "react-redux";
+import t from "../translations";
 
 function topLeft(value: number) {
     return value === 2 || value === 4 || value === 5 || value === 6;
@@ -184,7 +185,7 @@ function PlayArea() {
                 disabled={rollButtonDisabled}
                 onClick={onRollDiceClick}
             >
-                Roll Dice
+                {t("playing_RollDice")}
             </button>
             {rollCount === 0 ? null : rollResults}
         </div>
@@ -204,7 +205,7 @@ export default function PlayingState() {
                     className="bg-red-300 px-3 py-2 rounded text-gray-700"
                     onClick={() => dispatch(endGame())}
                 >
-                    End Game
+                    {t("playing_EndGame")}
                 </button>
             </div>
         </div>

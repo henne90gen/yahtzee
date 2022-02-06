@@ -8,33 +8,34 @@ import {
     totalUpperScore,
     upperScore
 } from "./logic";
+import t from "./translations";
 
 function TableHeader() {
     const classes = "overflow-ellipsis overflow-hidden whitespace-nowrap";
     return (
         <>
             <div className="w-full h-full border-b-2 border-black"/>
-            <div className={classes}>Upper Section</div>
-            <div className={classes}>Ones</div>
-            <div className={classes}>Twos</div>
-            <div className={classes}>Threes</div>
-            <div className={classes}>Fours</div>
-            <div className={classes}>Fives</div>
-            <div className={classes}>Sixes</div>
-            <div className={classes}>Total Score</div>
-            <div className={classes}>Bonus</div>
-            <div className={classes}>Total Upper Section</div>
-            <div className={classes}>Lower Section</div>
-            <div className={classes}>3 of a kind</div>
-            <div className={classes}>4 of a kind</div>
-            <div className={classes}>Full House</div>
-            <div className={classes}>SM Straight</div>
-            <div className={classes}>LG Straight</div>
-            <div className={classes}>Chance</div>
-            <div className={classes}>Yahtzee</div>
-            <div className={classes}>Total Lower Section</div>
-            <div className={classes}>Total Upper Section</div>
-            <div className={classes}>Grand Total</div>
+            <div className={classes}>{t("scoreBoard_UpperSection")}</div>
+            <div className={classes}>{t("scoreBoard_Ones")}</div>
+            <div className={classes}>{t("scoreBoard_Twos")}</div>
+            <div className={classes}>{t("scoreBoard_Threes")}</div>
+            <div className={classes}>{t("scoreBoard_Fours")}</div>
+            <div className={classes}>{t("scoreBoard_Fives")}</div>
+            <div className={classes}>{t("scoreBoard_Sixes")}</div>
+            <div className={classes}>{t("scoreBoard_UpperScore")}</div>
+            <div className={classes}>{t("scoreBoard_UpperBonus")}</div>
+            <div className={classes}>{t("scoreBoard_TotalUpperScore")}</div>
+            <div className={classes}>{t("scoreBoard_LowerSection")}</div>
+            <div className={classes}>{t("scoreBoard_ThreeOfAKind")}</div>
+            <div className={classes}>{t("scoreBoard_FourOfAKind")}</div>
+            <div className={classes}>{t("scoreBoard_FullHouse")}</div>
+            <div className={classes}>{t("scoreBoard_SmallStraight")}</div>
+            <div className={classes}>{t("scoreBoard_LargeStraight")}</div>
+            <div className={classes}>{t("scoreBoard_Chance")}</div>
+            <div className={classes}>{t("scoreBoard_Yahtzee")}</div>
+            <div className={classes}>{t("scoreBoard_TotalLowerSection")}</div>
+            <div className={classes}>{t("scoreBoard_TotalUpperSection")}</div>
+            <div className={classes}>{t("scoreBoard_GrandTotal")}</div>
         </>
     );
 }
