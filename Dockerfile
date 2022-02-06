@@ -4,7 +4,9 @@ RUN mkdir /app
 WORKDIR /app
 COPY . /app
 
-RUN yarn install && yarn build
+RUN yarn install
+RUN yarn test
+RUN yarn build
 
 FROM nginx:1.21.6-alpine
 
