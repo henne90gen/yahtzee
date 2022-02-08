@@ -11,30 +11,28 @@ import {
 import t from "./translations";
 
 function TableHeader() {
-    const classes = "overflow-ellipsis overflow-hidden whitespace-nowrap";
+    const classes = "overflow-ellipsis overflow-hidden whitespace-nowrap border-black";
     return (
         <>
             <div className="w-full h-full border-b-2 border-black"/>
-            <div className={classes}>{t("scoreBoard_UpperSection")}</div>
             <div className={classes}>{t("scoreBoard_Ones")}</div>
             <div className={classes}>{t("scoreBoard_Twos")}</div>
             <div className={classes}>{t("scoreBoard_Threes")}</div>
             <div className={classes}>{t("scoreBoard_Fours")}</div>
             <div className={classes}>{t("scoreBoard_Fives")}</div>
-            <div className={classes}>{t("scoreBoard_Sixes")}</div>
+            <div className={classes + " border-b-2"}>{t("scoreBoard_Sixes")}</div>
             <div className={classes}>{t("scoreBoard_UpperScore")}</div>
             <div className={classes}>{t("scoreBoard_UpperBonus")}</div>
-            <div className={classes}>{t("scoreBoard_TotalUpperScore")}</div>
-            <div className={classes}>{t("scoreBoard_LowerSection")}</div>
+            <div className={classes + " border-b-2"}>{t("scoreBoard_TotalUpperScore")}</div>
             <div className={classes}>{t("scoreBoard_ThreeOfAKind")}</div>
             <div className={classes}>{t("scoreBoard_FourOfAKind")}</div>
             <div className={classes}>{t("scoreBoard_FullHouse")}</div>
             <div className={classes}>{t("scoreBoard_SmallStraight")}</div>
             <div className={classes}>{t("scoreBoard_LargeStraight")}</div>
             <div className={classes}>{t("scoreBoard_Chance")}</div>
-            <div className={classes}>{t("scoreBoard_Yahtzee")}</div>
+            <div className={classes + " border-b-2"}>{t("scoreBoard_Yahtzee")}</div>
             <div className={classes}>{t("scoreBoard_TotalLowerSection")}</div>
-            <div className={classes}>{t("scoreBoard_TotalUpperSection")}</div>
+            <div className={classes + " border-b-2"}>{t("scoreBoard_TotalUpperSection")}</div>
             <div className={classes}>{t("scoreBoard_GrandTotal")}</div>
         </>
     );
@@ -46,27 +44,25 @@ function Scores(props: { player: Player }) {
     return (
         <>
             <div className={classes + " border-b-2"}>{player.name}</div>
-            <div className={classes}/>
             <div className={classes}>{player.ones}</div>
             <div className={classes}>{player.twos}</div>
             <div className={classes}>{player.threes}</div>
             <div className={classes}>{player.fours}</div>
             <div className={classes}>{player.fives}</div>
-            <div className={classes}>{player.sixes}</div>
+            <div className={classes + " border-b-2"}>{player.sixes}</div>
             <div className={classes}>{upperScore(player)}</div>
             <div
                 className={classes}>{isUpperBonusAchievable(player) ? (hasPlayerUpperBonus(player) ? '35' : '') : '0'}</div>
-            <div className={classes}>{totalUpperScore(player)}</div>
-            <div className={classes}/>
+            <div className={classes + " border-b-2"}>{totalUpperScore(player)}</div>
             <div className={classes}>{player.threeOfAKind}</div>
             <div className={classes}>{player.fourOfAKind}</div>
             <div className={classes}>{player.fullHouse}</div>
             <div className={classes}>{player.smallStraight}</div>
             <div className={classes}>{player.largeStraight}</div>
             <div className={classes}>{player.chance}</div>
-            <div className={classes}>{player.yahtzee}</div>
+            <div className={classes + " border-b-2"}>{player.yahtzee}</div>
             <div className={classes}>{totalLowerScore(player)}</div>
-            <div className={classes}>{totalUpperScore(player)}</div>
+            <div className={classes + " border-b-2"}>{totalUpperScore(player)}</div>
             <div className={classes}>{totalScore(player)}</div>
         </>
     );
@@ -78,7 +74,7 @@ export default function ScoreBoard(props: { players: Player[] }) {
         <div
             className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg shadow-lg"
             style={{
-                gridTemplateRows: '4em repeat(21, minmax(0, 1fr))',
+                gridTemplateRows: '4em repeat(19, minmax(0, 1fr))',
                 gridTemplateColumns: '10em',
             }}
         >

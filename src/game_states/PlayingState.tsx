@@ -105,10 +105,14 @@ function StrikeSelector(props: { currentPlayer: Player, rollCount: number, selec
         return null;
     }
 
-    return <select defaultValue="" onChange={(event) => {
-        event.preventDefault();
-        selectedOption(event.currentTarget.value as EndTurnOption, true);
-    }} className="bg-red-300 rounded p-2 m-2">
+    return <select
+        defaultValue=""
+        onChange={(event) => {
+            event.preventDefault();
+            selectedOption(event.currentTarget.value as EndTurnOption, true);
+        }}
+        className="bg-red-300 rounded p-2 m-2"
+    >
         <option value="" disabled>Strike something</option>
         {AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option))
             .map((option, i) => {

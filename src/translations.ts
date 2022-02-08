@@ -2,7 +2,7 @@ export const ALL_LANGUAGES = ["en", "de"] as const;
 type LanguageTuple = typeof ALL_LANGUAGES;
 export type Language = LanguageTuple[number];
 
-let CURRENT_LANGUAGE: Language = "en";
+let CURRENT_LANGUAGE: Language = "de";
 
 export type Translation<T extends string> = Record<Language, Record<T, string>>;
 
@@ -19,7 +19,6 @@ type FinishedTranslationKey =
     | "finished_Wins"
     | "finished_Points";
 type ScoreBoardTranslationKey =
-    | "scoreBoard_UpperSection"
     | "scoreBoard_Ones"
     | "scoreBoard_Twos"
     | "scoreBoard_Threes"
@@ -29,7 +28,6 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_UpperScore"
     | "scoreBoard_UpperBonus"
     | "scoreBoard_TotalUpperScore"
-    | "scoreBoard_LowerSection"
     | "scoreBoard_ThreeOfAKind"
     | "scoreBoard_FourOfAKind"
     | "scoreBoard_FullHouse"
@@ -40,12 +38,15 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_TotalLowerSection"
     | "scoreBoard_TotalUpperSection"
     | "scoreBoard_GrandTotal";
+type SettingsTranslationKey =
+    |"settings_Language";
 
 export type TranslationKey =
     | ReadyTranslationKey
     | PlayingTranslationKey
     | FinishedTranslationKey
-    | ScoreBoardTranslationKey;
+    | ScoreBoardTranslationKey
+    | SettingsTranslationKey;
 
 const TRANSLATIONS: Translation<TranslationKey> = {
     en: {
@@ -58,7 +59,6 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "finished_NewGame": "New Game",
         "finished_Wins": "wins",
         "finished_Points": "points",
-        "scoreBoard_UpperSection": "",
         "scoreBoard_Ones": "Ones",
         "scoreBoard_Twos": "Twos",
         "scoreBoard_Threes": "Threes",
@@ -68,7 +68,6 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "scoreBoard_UpperScore": "Upper Score",
         "scoreBoard_UpperBonus": "Bonus",
         "scoreBoard_TotalUpperScore": "Total Upper Score",
-        "scoreBoard_LowerSection": "Lower Section",
         "scoreBoard_ThreeOfAKind": "3 of a kind",
         "scoreBoard_FourOfAKind": "4 of a kind",
         "scoreBoard_FullHouse": "Full House",
@@ -79,6 +78,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "scoreBoard_TotalLowerSection": "Total Lower Section",
         "scoreBoard_TotalUpperSection": "Total Upper Section",
         "scoreBoard_GrandTotal": "Grand Total",
+        "settings_Language": "Language",
     },
     de: {
         "ready_StartGame": "Spiel starten",
@@ -90,17 +90,15 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "finished_NewGame": "Neues Spiel",
         "finished_Wins": "gewinnt",
         "finished_Points": "Punkte",
-        "scoreBoard_UpperSection": "",
         "scoreBoard_Ones": "Einsen",
         "scoreBoard_Twos": "Zweien",
         "scoreBoard_Threes": "Dreien",
         "scoreBoard_Fours": "Vieren",
         "scoreBoard_Fives": "Fünfen",
         "scoreBoard_Sixes": "Sechsen",
-        "scoreBoard_UpperScore": "TODO", // TODO
+        "scoreBoard_UpperScore": "Zwischensumme Oben",
         "scoreBoard_UpperBonus": "Bonus",
-        "scoreBoard_TotalUpperScore": "TODO", // TODO
-        "scoreBoard_LowerSection": "TODO", // TODO
+        "scoreBoard_TotalUpperScore": "Summe Oben",
         "scoreBoard_ThreeOfAKind": "Dreierpasch",
         "scoreBoard_FourOfAKind": "Viererpasch",
         "scoreBoard_FullHouse": "Full House",
@@ -108,9 +106,10 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "scoreBoard_LargeStraight": "Große Straße",
         "scoreBoard_Chance": "Chance",
         "scoreBoard_Yahtzee": "Kniffel",
-        "scoreBoard_TotalLowerSection": "TODO", // TODO
-        "scoreBoard_TotalUpperSection": "TODO", // TODO
-        "scoreBoard_GrandTotal": "TODO", // TODO
+        "scoreBoard_TotalLowerSection": "Summe Oben",
+        "scoreBoard_TotalUpperSection": "Summe Unten",
+        "scoreBoard_GrandTotal": "Endsumme",
+        "settings_Language": "Sprache",
     },
 };
 

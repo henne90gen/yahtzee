@@ -12,6 +12,7 @@ import {
 } from "./logic";
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
 import {loadFromLocalStorage, localStorageMiddleware} from "./persistence";
+import {changeLanguage, Language} from "./translations";
 
 export interface GameData {
     currentState: GameState
@@ -126,13 +127,52 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
     },
 });
 
+export interface SettingsData {
+    isSettingsOpen: boolean;
+    language: Language;
+}
+
+export function initialSettings(): SettingsData {
+    return {isSettingsOpen: false, language: "en"}
+}
+
+interface SettingsReducers {
+    [K: string]: CaseReducer<SettingsData, any>
+
+    openSettings: CaseReducer<SettingsData>,
+    closeSettings: CaseReducer<SettingsData>,
+    updateLanguageSetting: CaseReducer<SettingsData, PayloadAction<Language>>
+}
+
+const settingsSlice = createSlice<SettingsData, SettingsReducers, "settings">({
+    name: "settings",
+    initialState: initialSettings(),
+    reducers: {
+        openSettings: (state) => {
+            state.isSettingsOpen = true;
+        },
+        closeSettings: (state) => {
+            state.isSettingsOpen = false;
+        },
+        updateLanguageSetting: (state, action: PayloadAction<Language>) => {
+            state.language = action.payload;
+            changeLanguage(state.language)
+        }
+    },
+})
+
 const gameReducer = gameSlice.reducer;
+const settingsReducer = settingsSlice.reducer;
+
+const preloadedState = loadFromLocalStorage();
+changeLanguage(preloadedState.settings.language);
 
 export const store = configureStore({
     reducer: {
-        game: gameReducer
+        game: gameReducer,
+        settings: settingsReducer
     },
-    preloadedState: loadFromLocalStorage(),
+    preloadedState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware)
 })
 
@@ -154,3 +194,9 @@ export const {
     doDiceRoll,
     onDieLockChange,
 } = gameSlice.actions
+
+export const {
+    openSettings,
+    closeSettings,
+    updateLanguageSetting,
+} = settingsSlice.actions;

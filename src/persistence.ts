@@ -1,20 +1,26 @@
 import {Dispatch, MiddlewareAPI} from "@reduxjs/toolkit";
-import {GameData, initialState} from "./store";
+import {GameData, initialSettings, initialState, SettingsData} from "./store";
 
 const GAME_STATE_KEY = "yahtzee-game-state"
 
-export function loadFromLocalStorage(): { game: GameData } {
+type Data = { game: GameData, settings: SettingsData };
+
+function initialData(): Data {
+    return {game: initialState(), settings: initialSettings()}
+}
+
+export function loadFromLocalStorage(): Data {
     try {
         const serialisedState = localStorage.getItem(GAME_STATE_KEY);
         if (serialisedState === null) {
-            return {game: initialState()};
+            return initialData();
         }
         const result = JSON.parse(serialisedState);
         // TODO check that all properties are present, otherwise create a fresh initial state
         return result;
     } catch (e) {
         console.warn(e);
-        return {game: initialState()};
+        return initialData();
     }
 }
 
