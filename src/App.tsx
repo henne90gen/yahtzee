@@ -3,8 +3,9 @@ import ReadyState from "./game_states/ReadyState";
 import PlayingState from "./game_states/PlayingState";
 import FinishedState from "./game_states/FinishedState";
 import {useDispatch, useSelector} from "react-redux";
-import {closeSettings, openSettings, RootState, updateLanguageSetting} from "./store";
+import {RootState} from "./store/store";
 import t, {Language} from "./translations";
+import {closeSettings, openSettings, updateLanguageSetting} from "./store/settings";
 
 function SettingsView() {
     const dispatch = useDispatch();

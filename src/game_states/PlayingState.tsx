@@ -2,7 +2,8 @@ import {AllEndTurnOptions, Die, EndTurnOption, Player} from "../models";
 import React, {ReactElement} from "react";
 import {getAvailableOptions, playerCanStrike} from "../logic";
 import ScoreBoard from "../ScoreBoard";
-import {doDiceRoll, endGame, endTurn, onDieLockChange, RootState} from "../store";
+import {doDiceRoll, endGame, endTurn, onDieLockChange} from "../store/game";
+import {RootState} from "../store/store";
 import {useDispatch, useSelector} from "react-redux";
 import t from "../translations";
 

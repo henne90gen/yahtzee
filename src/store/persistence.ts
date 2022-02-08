@@ -1,5 +1,6 @@
 import {Dispatch, MiddlewareAPI} from "@reduxjs/toolkit";
-import {GameData, initialSettings, initialState, SettingsData} from "./store";
+import {GameData, initialState} from "./game";
+import {initialSettings, SettingsData} from "./settings";
 
 const GAME_STATE_KEY = "yahtzee-game-state"
 

@@ -1,18 +1,13 @@
-import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Die, EndTurnOption, GameState, Player, PlayerName} from "./models";
+import {Die, EndTurnOption, GameState, Player, PlayerName} from "../models";
 import {
-    getLeadingPlayerIndex,
-    getWinningPlayerIndex,
+    getLeadingPlayerIndex, getWinningPlayerIndex,
     initDice,
-    initPlayers, removeIndexAndUpdateLaterIndices,
-    rollDice,
-    toggleLock,
-    updateScore,
+    initPlayers,
+    removeIndexAndUpdateLaterIndices, rollDice, toggleLock, updateScore,
     updateScoreStrike
-} from "./logic";
+} from "../logic";
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
-import {loadFromLocalStorage, localStorageMiddleware} from "./persistence";
-import {changeLanguage, Language} from "./translations";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export interface GameData {
     currentState: GameState
@@ -127,60 +122,7 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
     },
 });
 
-export interface SettingsData {
-    isSettingsOpen: boolean;
-    language: Language;
-}
-
-export function initialSettings(): SettingsData {
-    return {isSettingsOpen: false, language: "en"}
-}
-
-interface SettingsReducers {
-    [K: string]: CaseReducer<SettingsData, any>
-
-    openSettings: CaseReducer<SettingsData>,
-    closeSettings: CaseReducer<SettingsData>,
-    updateLanguageSetting: CaseReducer<SettingsData, PayloadAction<Language>>
-}
-
-const settingsSlice = createSlice<SettingsData, SettingsReducers, "settings">({
-    name: "settings",
-    initialState: initialSettings(),
-    reducers: {
-        openSettings: (state) => {
-            state.isSettingsOpen = true;
-        },
-        closeSettings: (state) => {
-            state.isSettingsOpen = false;
-        },
-        updateLanguageSetting: (state, action: PayloadAction<Language>) => {
-            state.language = action.payload;
-            changeLanguage(state.language)
-        }
-    },
-})
-
-const gameReducer = gameSlice.reducer;
-const settingsReducer = settingsSlice.reducer;
-
-const preloadedState = loadFromLocalStorage();
-changeLanguage(preloadedState.settings.language);
-
-export const store = configureStore({
-    reducer: {
-        game: gameReducer,
-        settings: settingsReducer
-    },
-    preloadedState,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware)
-})
-
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
-
+export const gameReducer = gameSlice.reducer;
 export const {
     addPlayerName,
     removePlayerName,
@@ -194,9 +136,3 @@ export const {
     doDiceRoll,
     onDieLockChange,
 } = gameSlice.actions
-
-export const {
-    openSettings,
-    closeSettings,
-    updateLanguageSetting,
-} = settingsSlice.actions;

@@ -2,7 +2,8 @@ import {totalScore} from "../logic";
 import React from "react";
 import ScoreBoard from "../ScoreBoard";
 import {useDispatch, useSelector} from "react-redux";
-import {newGame, RootState} from "../store";
+import {RootState} from "../store/store";
+import {newGame} from "../store/game";
 import t from "../translations";
 
 function WinnerCard() {

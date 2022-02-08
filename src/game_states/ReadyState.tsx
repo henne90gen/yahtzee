@@ -6,11 +6,11 @@ import {
     addPlayerName,
     removeInvalidPlayerName,
     removePlayerName,
-    RootState,
     startGame,
     updatePlayerName
-} from "../store";
+} from "../store/game";
 import t from "../translations";
+import {RootState} from "../store/store";
 
 function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlayer: (p: PlayerName) => void, removePlayer: () => void }) {
     const {player, invalid, updatePlayer, removePlayer} = props;
