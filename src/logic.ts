@@ -1,4 +1,5 @@
 import {Die, EndTurnOption, Player, PlayerName, PlayerState} from './models';
+import "./random"
 
 export function isUpperBonusAchievable(player: PlayerState): boolean {
     if (hasPlayerUpperBonus(player)) {
@@ -114,11 +115,16 @@ export function initDice() {
     return dice;
 }
 
-export function rollDice(dice: Die[], rollCount: number): Die[] {
+export function rollDice(dice: Die[], rollCount: number, getRandomNumber: () => number): Die[] {
     const result = [];
     for (const die of dice) {
         if (die.locked === 'unlocked') {
-            die.value = Math.ceil(Math.random() * 6);
+            const num = getRandomNumber();
+            let value = Math.ceil(num * 6);
+            if (value === 0) {
+                value = 1;
+            }
+            die.value = value;
         }
         if (rollCount === 3) {
             die.locked = 'permanently-locked';
@@ -386,7 +392,7 @@ export function getWinningPlayerIndex(players: Player[]): number | null {
     return getLeadingPlayerIndex(players)
 }
 
-export function removeIndexAndUpdateLaterIndices(array:number[], index:number) {
+export function removeIndexAndUpdateLaterIndices(array: number[], index: number) {
     for (let i = 0; i < array.length; i++) {
         if (array[i] === index) {
             array.splice(i, 1);

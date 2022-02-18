@@ -8,6 +8,7 @@ import {
 } from "../logic";
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {random, randomState} from "../random";
 
 export interface GameData {
     currentState: GameState
@@ -16,10 +17,11 @@ export interface GameData {
         invalidNames: number[]
     }
     players: Player[]
-    currentPlayerIndex: number,
+    currentPlayerIndex: number
     dice: Die[]
     rollCount: number
     winningPlayerIndex: number
+    randomState: number
 }
 
 export function initialState(): GameData {
@@ -31,6 +33,7 @@ export function initialState(): GameData {
         winningPlayerIndex: 0,
         dice: initDice(),
         rollCount: 0,
+        randomState: randomState(new Date().toISOString()),
     }
 }
 
@@ -84,6 +87,7 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.winningPlayerIndex = 0;
             state.rollCount = 0;
             state.currentPlayerIndex = 0;
+            state.randomState = randomState(new Date().toISOString());
         },
         endGame: (state) => {
             const leadingPlayerIndex = getLeadingPlayerIndex(state.players);
@@ -114,11 +118,18 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         },
         doDiceRoll: (state) => {
             state.rollCount += 1;
-            state.dice = rollDice(state.dice, state.rollCount);
+
+            function getRandomNumber() {
+                const [newRandomState, randomNumber] = random(state.randomState);
+                state.randomState = newRandomState;
+                return randomNumber;
+            }
+
+            state.dice = rollDice(state.dice, state.rollCount, getRandomNumber);
         },
         onDieLockChange: (state, action: PayloadAction<number>) => {
             state.dice = toggleLock(state.dice, action.payload);
-        }
+        },
     },
 });
 
