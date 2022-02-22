@@ -10,6 +10,7 @@ import {
 import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {random, randomState} from "../random";
+import {RootState} from "./store";
 
 export interface GameData {
     currentState: GameState
@@ -54,36 +55,41 @@ interface GameReducers {
     onDieLockChange: CaseReducer<GameData, PayloadAction<number>>
 }
 
-function doAiTurn(state: GameData) {
-    const currentPlayer = state.players[state.currentPlayerIndex];
-    if (!currentPlayer.isAI) {
-        return;
+export function endTurnThunk(payload: { option: EndTurnOption, strike: boolean }) {
+    return (dispatch: any) => {
+        dispatch(gameSlice.actions.endTurn(payload));
+        dispatch(doAiTurnThunk());
     }
+}
 
-    function getRandomNumber() {
-        const [newRandomState, randomNumber] = random(state.randomState);
-        state.randomState = newRandomState;
-        return randomNumber;
-    }
-
-    for (let i = 0; i < 3; i++) {
-        state.dice = rollDice(state.dice, state.rollCount, getRandomNumber);
-
-        const availableOptions = getAvailableOptions(currentPlayer, state.dice);
-        if (availableOptions.length !== 0) {
-            endTurnFunc(state, {
-                option: availableOptions[0],
-                strike: false,
-            });
-            break;
-        } else {
-            const strikeOptions = AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option));
-            endTurnFunc(state, {
-                option: strikeOptions[0],
-                strike: true,
-            });
-            break;
+function doAiTurnThunk() {
+    return (dispatch: any, getState: () => RootState) => {
+        const {game} = getState();
+        const currentPlayer = game.players[game.currentPlayerIndex];
+        if (!currentPlayer.isAI) {
+            return;
         }
+
+        setTimeout(() => {
+            dispatch(gameSlice.actions.doDiceRoll());
+            setTimeout(() => {
+                const {game} = getState();
+                const currentPlayer = game.players[game.currentPlayerIndex];
+                const availableOptions = getAvailableOptions(currentPlayer, game.dice);
+                if (availableOptions.length !== 0) {
+                    dispatch(endTurnThunk({
+                        option: availableOptions[0],
+                        strike: false,
+                    }));
+                } else {
+                    const strikeOptions = AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option));
+                    dispatch(endTurnThunk({
+                        option: strikeOptions[0],
+                        strike: true,
+                    }));
+                }
+            }, 1000);
+        }, 1000);
     }
 }
 
@@ -109,8 +115,13 @@ function endTurnFunc(state: GameData, payload: { option: EndTurnOption, strike: 
         state.currentState = "finished";
         return;
     }
+}
 
-    doAiTurn(state);
+export function startGameThunk() {
+    return (dispatch: any) => {
+        dispatch(gameSlice.actions.startGame());
+        dispatch(doAiTurnThunk());
+    }
 }
 
 const gameSlice = createSlice<GameData, GameReducers, "game">({
@@ -140,8 +151,6 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         startGame: (state) => {
             state.currentState = "playing";
             state.players = initPlayers(state.readyState.names);
-
-            doAiTurn(state);
         },
         newGame: (state) => {
             state.currentState = "ready";
@@ -189,4 +198,4 @@ export const {
     endTurn,
     doDiceRoll,
     onDieLockChange,
-} = gameSlice.actions
+} = gameSlice.actions;

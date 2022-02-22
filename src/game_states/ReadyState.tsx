@@ -1,12 +1,12 @@
 import {PlayerName} from "../models";
 import React from "react";
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
     addInvalidPlayerName,
     addPlayerName,
     removeInvalidPlayerName,
     removePlayerName,
-    startGame,
+    startGameThunk,
     updatePlayerName
 } from "../store/game";
 import t from "../translations";
@@ -76,7 +76,7 @@ export default function ReadyState() {
             return;
         }
 
-        dispatch(startGame())
+        dispatch(startGameThunk())
     }
 
     const renderedPlayers = state.names.map(

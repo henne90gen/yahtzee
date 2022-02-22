@@ -2,7 +2,7 @@ import {AllEndTurnOptions, Die, EndTurnOption, Player} from "../models";
 import React, {ReactElement} from "react";
 import {getAvailableOptions, playerCanStrike} from "../logic";
 import ScoreBoard from "../ScoreBoard";
-import {doDiceRoll, endGame, endTurn, onDieLockChange} from "../store/game";
+import {doDiceRoll, endGame, endTurnThunk, onDieLockChange} from "../store/game";
 import {RootState} from "../store/store";
 import {useDispatch, useSelector} from "react-redux";
 import t from "../translations";
@@ -158,7 +158,7 @@ function PlayArea() {
     };
 
     function selectedOption(option: EndTurnOption, strike: boolean) {
-        dispatch(endTurn({option, strike}));
+        dispatch(endTurnThunk({option, strike}));
     }
 
     const rollResults = <>
