@@ -158,7 +158,7 @@ function PlayArea() {
     };
 
     function selectedOption(option: EndTurnOption, strike: boolean) {
-        dispatch(endTurn({option, dice, strike}));
+        dispatch(endTurn({option, strike}));
     }
 
     const rollResults = <>

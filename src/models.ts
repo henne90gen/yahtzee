@@ -1,6 +1,9 @@
 export type GameState = 'ready' | 'playing' | 'finished';
 
-export type PlayerName = { name: string }
+export type PlayerName = {
+    name: string;
+    isAI: boolean;
+}
 export type PlayerState = {
     ones: number | null;
     twos: number | null;

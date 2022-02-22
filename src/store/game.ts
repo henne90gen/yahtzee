@@ -1,8 +1,9 @@
-import {Die, EndTurnOption, GameState, Player, PlayerName} from "../models";
+import {AllEndTurnOptions, Die, EndTurnOption, GameState, Player, PlayerName} from "../models";
 import {
+    getAvailableOptions,
     getLeadingPlayerIndex, getWinningPlayerIndex,
     initDice,
-    initPlayers,
+    initPlayers, playerCanStrike,
     removeIndexAndUpdateLaterIndices, rollDice, toggleLock, updateScore,
     updateScoreStrike
 } from "../logic";
@@ -26,7 +27,7 @@ export interface GameData {
 
 export function initialState(): GameData {
     return {
-        readyState: {names: [{name: "Alice"}, {name: "Bob"}], invalidNames: []},
+        readyState: {names: [{name: "Alice", isAI: false}, {name: "Bob", isAI: false}], invalidNames: []},
         currentState: "ready",
         players: [],
         currentPlayerIndex: 0,
@@ -48,9 +49,68 @@ interface GameReducers {
     startGame: CaseReducer<GameData>
     newGame: CaseReducer<GameData>
     endGame: CaseReducer<GameData>
-    endTurn: CaseReducer<GameData, PayloadAction<{ option: EndTurnOption, dice: Die[], strike: boolean }>>
+    endTurn: CaseReducer<GameData, PayloadAction<{ option: EndTurnOption, strike: boolean }>>
     doDiceRoll: CaseReducer<GameData>
     onDieLockChange: CaseReducer<GameData, PayloadAction<number>>
+}
+
+function doAiTurn(state: GameData) {
+    const currentPlayer = state.players[state.currentPlayerIndex];
+    if (!currentPlayer.isAI) {
+        return;
+    }
+
+    function getRandomNumber() {
+        const [newRandomState, randomNumber] = random(state.randomState);
+        state.randomState = newRandomState;
+        return randomNumber;
+    }
+
+    for (let i = 0; i < 3; i++) {
+        state.dice = rollDice(state.dice, state.rollCount, getRandomNumber);
+
+        const availableOptions = getAvailableOptions(currentPlayer, state.dice);
+        if (availableOptions.length !== 0) {
+            endTurnFunc(state, {
+                option: availableOptions[0],
+                strike: false,
+            });
+            break;
+        } else {
+            const strikeOptions = AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option));
+            endTurnFunc(state, {
+                option: strikeOptions[0],
+                strike: true,
+            });
+            break;
+        }
+    }
+}
+
+function endTurnFunc(state: GameData, payload: { option: EndTurnOption, strike: boolean }) {
+    const {option, strike} = payload;
+
+    if (strike) {
+        updateScoreStrike(state.players[state.currentPlayerIndex], option)
+    } else {
+        updateScore(state.players[state.currentPlayerIndex], option, state.dice);
+    }
+
+    state.dice = initDice();
+    state.rollCount = 0;
+    let tmp = state.currentPlayerIndex
+    tmp++;
+    tmp %= state.players.length;
+    state.currentPlayerIndex = tmp;
+
+    const winningPlayer = getWinningPlayerIndex(state.players);
+    if (winningPlayer !== null) {
+        state.winningPlayerIndex = winningPlayer;
+        state.currentState = "finished";
+        return;
+    }
+
+    doAiTurn(state);
 }
 
 const gameSlice = createSlice<GameData, GameReducers, "game">({
@@ -72,7 +132,7 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
                     return
                 }
             }
-            state.readyState.invalidNames.push(action.payload)
+            state.readyState.invalidNames.push(action.payload);
         },
         removeInvalidPlayerName: (state, action: PayloadAction<number>) => {
             state.readyState.invalidNames = removeIndexAndUpdateLaterIndices(state.readyState.invalidNames, action.payload);
@@ -80,6 +140,8 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         startGame: (state) => {
             state.currentState = "playing";
             state.players = initPlayers(state.readyState.names);
+
+            doAiTurn(state);
         },
         newGame: (state) => {
             state.currentState = "ready";
@@ -94,27 +156,8 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.winningPlayerIndex = leadingPlayerIndex!;
             state.currentState = "finished";
         },
-        endTurn: (state, action: PayloadAction<{ option: EndTurnOption, dice: Die[], strike: boolean }>) => {
-            state.dice = initDice();
-            state.rollCount = 0;
-
-            const {option, dice, strike} = action.payload;
-            if (strike) {
-                updateScoreStrike(state.players[state.currentPlayerIndex], option)
-            } else {
-                updateScore(state.players[state.currentPlayerIndex], option, dice);
-            }
-
-            let tmp = state.currentPlayerIndex
-            tmp++;
-            tmp %= state.players.length;
-            state.currentPlayerIndex = tmp;
-
-            const winningPlayer = getWinningPlayerIndex(state.players);
-            if (winningPlayer !== null) {
-                state.winningPlayerIndex = winningPlayer;
-                state.currentState = "finished";
-            }
+        endTurn: (state: GameData, action: PayloadAction<{ option: EndTurnOption, strike: boolean }>) => {
+            endTurnFunc(state, action.payload);
         },
         doDiceRoll: (state) => {
             state.rollCount += 1;

@@ -22,30 +22,40 @@ function PlayerAvatar(props: { player: PlayerName, invalid: boolean, updatePlaye
 
     function getInvalidNameMessage() {
         if (invalid) {
-            return <div className="text-xs text-red-700 pt-0.5">{t("ready_InvalidNameMessage")}</div>;
+            return <div className="col-span-3 text-xs text-red-700 pt-0.5">{t("ready_InvalidNameMessage")}</div>;
         }
         return "";
     }
 
-    return <div>
-        <div className="grid gap-3" style={{gridTemplateColumns: "80% 15%"}}>
+    return <div className="grid gap-3 items-center" style={{gridTemplateColumns: "3fr 0.7fr 0.6fr"}}>
+        <input
+            className={bgColor + "h-full px-3 rounded"}
+            value={player.name}
+            onChange={(event) => {
+                const value = event.target.value;
+                updatePlayer({...player, name: value});
+            }}
+        />
+        <div className="grid grid-cols-2" style={{gridTemplateColumns: "1fr 2fr"}}>
             <input
-                className={bgColor + "px-3 rounded"}
-                value={player.name}
+                type="checkbox"
+                className="w-3.5"
+                checked={player.isAI}
                 onChange={(event) => {
-                    const value = event.target.value;
-                    updatePlayer({name: value});
+                    const value = event.target.checked;
+                    updatePlayer({...player, isAI: value})
                 }}
             />
-            <button
-                title={t("ready_RemovePlayerTooltip")}
-                className="p-2 rounded bg-red-300"
-                onClick={() => {
-                    removePlayer();
-                }}>
-                -
-            </button>
+            <span className="ml-1">AI</span>
         </div>
+        <button
+            title={t("ready_RemovePlayerTooltip")}
+            className="p-2 rounded bg-red-300"
+            onClick={() => {
+                removePlayer();
+            }}>
+            -
+        </button>
         {getInvalidNameMessage()}
     </div>;
 }
@@ -97,12 +107,12 @@ export default function ReadyState() {
                 style={{gridTemplateColumns: "1fr"}}
             >
                 {renderedPlayers}
-                <div className="grid gap-4 pt-3" style={{gridTemplateColumns: "25% 70%"}}>
+                <div className="grid gap-4 pt-3" style={{gridTemplateColumns: "1fr 3fr"}}>
                     <button
                         title={t("ready_AddPlayerTooltip")}
                         className="py-2 px-5 bg-blue-400 rounded-lg text-white"
                         onClick={() => {
-                            dispatch(addPlayerName({name: ""}))
+                            dispatch(addPlayerName({name: "", isAI: false}));
                         }}>
                         +
                     </button>

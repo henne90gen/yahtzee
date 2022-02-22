@@ -85,7 +85,7 @@ export function initPlayers(playerNames: PlayerName[]): Player[] {
     const players: Player[] = [];
     for (let playerName of playerNames) {
         players.push({
-            name: playerName.name,
+            ...playerName,
 
             ones: null,
             twos: null,
