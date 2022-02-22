@@ -63,6 +63,7 @@ export function endTurnThunk(payload: { option: EndTurnOption, strike: boolean }
 }
 
 function doAiTurnThunk() {
+    // TODO add proper type for dispatch
     return (dispatch: any, getState: () => RootState) => {
         const {game} = getState();
         const currentPlayer = game.players[game.currentPlayerIndex];
@@ -70,6 +71,7 @@ function doAiTurnThunk() {
             return;
         }
 
+        // TODO rewrite this to be more readable (maybe use promises)
         setTimeout(() => {
             dispatch(gameSlice.actions.doDiceRoll());
             setTimeout(() => {
@@ -118,6 +120,7 @@ function endTurnFunc(state: GameData, payload: { option: EndTurnOption, strike: 
 }
 
 export function startGameThunk() {
+    // TODO add proper type for dispatch
     return (dispatch: any) => {
         dispatch(gameSlice.actions.startGame());
         dispatch(doAiTurnThunk());
