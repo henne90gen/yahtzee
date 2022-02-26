@@ -114,10 +114,10 @@ function StrikeSelector(props: { currentPlayer: Player, rollCount: number, selec
         }}
         className="bg-red-300 rounded p-2 m-2"
     >
-        <option value="" disabled>Strike something</option>
+        <option value="" disabled>{t("playing_StrikeSomething")}</option>
         {AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option))
             .map((option, i) => {
-                return <option key={i} value={option}>{option}</option>
+                return <option key={i} value={option}>{t(option)}</option>
             })
         }
     </select>;
@@ -135,7 +135,7 @@ function DiceOptions(props: { currentPlayer: Player, dice: Die[], selectedOption
                     selectedOption(option, false);
                 }}
             >
-                {option}
+                {t(option)}
             </button>
         });
 
@@ -162,7 +162,7 @@ function PlayArea() {
     }
 
     const rollResults = <>
-        <div className="text-center">Roll {rollCount}</div>
+        <div className="text-center">{t("playing_RollCount")} {rollCount}</div>
         <Dice dice={dice}/>
         <DiceOptions
             currentPlayer={currentPlayer}

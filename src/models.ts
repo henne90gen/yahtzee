@@ -29,7 +29,7 @@ export type Die = {
 };
 
 export type EndTurnOption =
-    "ones"
+    | "ones"
     | "twos"
     | "threes"
     | "fours"

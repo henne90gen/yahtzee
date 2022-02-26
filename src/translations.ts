@@ -1,3 +1,5 @@
+import {EndTurnOption} from "./models";
+
 export const ALL_LANGUAGES = ["en", "de"] as const;
 type LanguageTuple = typeof ALL_LANGUAGES;
 export type Language = LanguageTuple[number];
@@ -13,28 +15,18 @@ type ReadyTranslationKey =
     | "ready_RemovePlayerTooltip";
 type PlayingTranslationKey =
     | "playing_RollDice"
+    | "playing_RollCount"
+    | "playing_StrikeSomething"
     | "playing_EndGame";
 type FinishedTranslationKey =
     | "finished_NewGame"
     | "finished_Wins"
     | "finished_Points";
 type ScoreBoardTranslationKey =
-    | "scoreBoard_Ones"
-    | "scoreBoard_Twos"
-    | "scoreBoard_Threes"
-    | "scoreBoard_Fours"
-    | "scoreBoard_Fives"
-    | "scoreBoard_Sixes"
+    | EndTurnOption
     | "scoreBoard_UpperScore"
     | "scoreBoard_UpperBonus"
     | "scoreBoard_TotalUpperScore"
-    | "scoreBoard_ThreeOfAKind"
-    | "scoreBoard_FourOfAKind"
-    | "scoreBoard_FullHouse"
-    | "scoreBoard_SmallStraight"
-    | "scoreBoard_LargeStraight"
-    | "scoreBoard_Chance"
-    | "scoreBoard_Yahtzee"
     | "scoreBoard_TotalLowerSection"
     | "scoreBoard_TotalUpperSection"
     | "scoreBoard_GrandTotal";
@@ -55,26 +47,28 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "ready_AddPlayerTooltip": "Add Player",
         "ready_RemovePlayerTooltip": "Remove Player",
         "playing_RollDice": "Roll Dice",
+        "playing_RollCount": "",
+        "playing_StrikeSomething": "",
         "playing_EndGame": "End Game",
         "finished_NewGame": "New Game",
         "finished_Wins": "wins",
         "finished_Points": "points",
-        "scoreBoard_Ones": "Ones",
-        "scoreBoard_Twos": "Twos",
-        "scoreBoard_Threes": "Threes",
-        "scoreBoard_Fours": "Fours",
-        "scoreBoard_Fives": "Fives",
-        "scoreBoard_Sixes": "Sixes",
+        "ones": "Ones",
+        "twos": "Twos",
+        "threes": "Threes",
+        "fours": "Fours",
+        "fives": "Fives",
+        "sixes": "Sixes",
         "scoreBoard_UpperScore": "Upper Score",
         "scoreBoard_UpperBonus": "Bonus",
         "scoreBoard_TotalUpperScore": "Total Upper Score",
-        "scoreBoard_ThreeOfAKind": "3 of a kind",
-        "scoreBoard_FourOfAKind": "4 of a kind",
-        "scoreBoard_FullHouse": "Full House",
-        "scoreBoard_SmallStraight": "SM Straight",
-        "scoreBoard_LargeStraight": "LG Straight",
-        "scoreBoard_Chance": "Chance",
-        "scoreBoard_Yahtzee": "Yahtzee",
+        "threeOfAKind": "3 of a kind",
+        "fourOfAKind": "4 of a kind",
+        "fullHouse": "Full House",
+        "smallStraight": "SM Straight",
+        "largeStraight": "LG Straight",
+        "chance": "Chance",
+        "yahtzee": "Yahtzee",
         "scoreBoard_TotalLowerSection": "Total Lower Section",
         "scoreBoard_TotalUpperSection": "Total Upper Section",
         "scoreBoard_GrandTotal": "Grand Total",
@@ -86,26 +80,28 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         "ready_AddPlayerTooltip": "Spieler hinzufügen",
         "ready_RemovePlayerTooltip": "Spieler entfernen",
         "playing_RollDice": "Würfeln",
+        "playing_RollCount": "Wurf",
+        "playing_StrikeSomething": "Streiche etwas",
         "playing_EndGame": "Spiel beenden",
         "finished_NewGame": "Neues Spiel",
         "finished_Wins": "gewinnt",
         "finished_Points": "Punkte",
-        "scoreBoard_Ones": "Einsen",
-        "scoreBoard_Twos": "Zweien",
-        "scoreBoard_Threes": "Dreien",
-        "scoreBoard_Fours": "Vieren",
-        "scoreBoard_Fives": "Fünfen",
-        "scoreBoard_Sixes": "Sechsen",
+        "ones": "Einsen",
+        "twos": "Zweien",
+        "threes": "Dreien",
+        "fours": "Vieren",
+        "fives": "Fünfen",
+        "sixes": "Sechsen",
         "scoreBoard_UpperScore": "Zwischensumme Oben",
         "scoreBoard_UpperBonus": "Bonus",
         "scoreBoard_TotalUpperScore": "Summe Oben",
-        "scoreBoard_ThreeOfAKind": "Dreierpasch",
-        "scoreBoard_FourOfAKind": "Viererpasch",
-        "scoreBoard_FullHouse": "Full House",
-        "scoreBoard_SmallStraight": "Kleine Straße",
-        "scoreBoard_LargeStraight": "Große Straße",
-        "scoreBoard_Chance": "Chance",
-        "scoreBoard_Yahtzee": "Kniffel",
+        "threeOfAKind": "Dreierpasch",
+        "fourOfAKind": "Viererpasch",
+        "fullHouse": "Full House",
+        "smallStraight": "Kleine Straße",
+        "largeStraight": "Große Straße",
+        "chance": "Chance",
+        "yahtzee": "Kniffel",
         "scoreBoard_TotalLowerSection": "Summe Oben",
         "scoreBoard_TotalUpperSection": "Summe Unten",
         "scoreBoard_GrandTotal": "Endsumme",

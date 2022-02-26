@@ -55,6 +55,15 @@ interface GameReducers {
     onDieLockChange: CaseReducer<GameData, PayloadAction<number>>
 }
 
+async function timeout(t: number, func: () => void): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            func();
+            resolve();
+        }, t);
+    });
+}
+
 export function endTurnThunk(payload: { option: EndTurnOption, strike: boolean }) {
     return (dispatch: any) => {
         dispatch(gameSlice.actions.endTurn(payload));
@@ -64,17 +73,21 @@ export function endTurnThunk(payload: { option: EndTurnOption, strike: boolean }
 
 function doAiTurnThunk() {
     // TODO add proper type for dispatch
-    return (dispatch: any, getState: () => RootState) => {
+    return async (dispatch: any, getState: () => RootState) => {
         const {game} = getState();
         const currentPlayer = game.players[game.currentPlayerIndex];
         if (!currentPlayer.isAI) {
             return;
         }
 
-        // TODO rewrite this to be more readable (maybe use promises)
-        setTimeout(() => {
-            dispatch(gameSlice.actions.doDiceRoll());
-            setTimeout(() => {
+        for (let i = 0; i < 3; i++) {
+            await timeout(1000, () => {
+                dispatch(gameSlice.actions.doDiceRoll());
+            });
+
+            let hasEndedTurn = false;
+            await timeout(1000, () => {
+                // TODO implement proper AI here
                 const {game} = getState();
                 const currentPlayer = game.players[game.currentPlayerIndex];
                 const availableOptions = getAvailableOptions(currentPlayer, game.dice);
@@ -83,15 +96,20 @@ function doAiTurnThunk() {
                         option: availableOptions[0],
                         strike: false,
                     }));
+                    hasEndedTurn = true;
                 } else {
                     const strikeOptions = AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option));
                     dispatch(endTurnThunk({
                         option: strikeOptions[0],
                         strike: true,
                     }));
+                    hasEndedTurn = true;
                 }
-            }, 1000);
-        }, 1000);
+            });
+            if (hasEndedTurn) {
+                break;
+            }
+        }
     }
 }
 

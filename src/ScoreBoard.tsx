@@ -15,22 +15,22 @@ function TableHeader() {
     return (
         <>
             <div className="w-full h-full border-b-2 border-black"/>
-            <div className={classes}>{t("scoreBoard_Ones")}</div>
-            <div className={classes}>{t("scoreBoard_Twos")}</div>
-            <div className={classes}>{t("scoreBoard_Threes")}</div>
-            <div className={classes}>{t("scoreBoard_Fours")}</div>
-            <div className={classes}>{t("scoreBoard_Fives")}</div>
-            <div className={classes + " border-b-2"}>{t("scoreBoard_Sixes")}</div>
+            <div className={classes}>{t("ones")}</div>
+            <div className={classes}>{t("twos")}</div>
+            <div className={classes}>{t("threes")}</div>
+            <div className={classes}>{t("fours")}</div>
+            <div className={classes}>{t("fives")}</div>
+            <div className={classes + " border-b-2"}>{t("sixes")}</div>
             <div className={classes}>{t("scoreBoard_UpperScore")}</div>
             <div className={classes}>{t("scoreBoard_UpperBonus")}</div>
             <div className={classes + " border-b-2"}>{t("scoreBoard_TotalUpperScore")}</div>
-            <div className={classes}>{t("scoreBoard_ThreeOfAKind")}</div>
-            <div className={classes}>{t("scoreBoard_FourOfAKind")}</div>
-            <div className={classes}>{t("scoreBoard_FullHouse")}</div>
-            <div className={classes}>{t("scoreBoard_SmallStraight")}</div>
-            <div className={classes}>{t("scoreBoard_LargeStraight")}</div>
-            <div className={classes}>{t("scoreBoard_Chance")}</div>
-            <div className={classes + " border-b-2"}>{t("scoreBoard_Yahtzee")}</div>
+            <div className={classes}>{t("threeOfAKind")}</div>
+            <div className={classes}>{t("fourOfAKind")}</div>
+            <div className={classes}>{t("fullHouse")}</div>
+            <div className={classes}>{t("smallStraight")}</div>
+            <div className={classes}>{t("largeStraight")}</div>
+            <div className={classes}>{t("chance")}</div>
+            <div className={classes + " border-b-2"}>{t("yahtzee")}</div>
             <div className={classes}>{t("scoreBoard_TotalLowerSection")}</div>
             <div className={classes + " border-b-2"}>{t("scoreBoard_TotalUpperSection")}</div>
             <div className={classes}>{t("scoreBoard_GrandTotal")}</div>

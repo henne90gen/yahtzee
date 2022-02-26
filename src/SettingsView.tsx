@@ -9,12 +9,13 @@ export function SettingsView() {
     const language = useSelector((state: RootState) => state.settings.language);
     return <div className="pt-10 sm:pt-14 md:pt-20 flex justify-center">
         <div
-            className="grid gap-3 grid-cols-2 justify-center lg:w-1/2 xl:w-1/3 rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
+            className="grid gap-20 grid-cols-2 justify-center lg:w-1/2 xl:w-1/3 rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white"
         >
             <div>{t("settings_Language")}</div>
-            <div>
+            <div className="grid justify-center">
                 <select
                     value={language}
+                    className="p-2 rounded bg-blue-500 text-white"
                     onChange={(event) => dispatch(updateLanguageSetting(event.currentTarget.value as Language))}
                 >
                     <option value="de">DE</option>
