@@ -1,4 +1,4 @@
-import {Die, EndTurnOption, Player, PlayerName, PlayerState} from './models';
+import { Die, EndTurnOption, Player, PlayerName, PlayerState } from './models';
 import "./random"
 
 export function isUpperBonusAchievable(player: PlayerState): boolean {
@@ -110,21 +110,25 @@ export function initPlayers(playerNames: PlayerName[]): Player[] {
 export function initDice() {
     const dice: Die[] = [];
     for (let i = 0; i < 5; i++) {
-        dice.push({value: 0, locked: 'unlocked'});
+        dice.push({ value: 1, locked: 'unlocked' });
     }
     return dice;
+}
+
+function rollDie(getRandomNumber: () => number) {
+    const num = getRandomNumber();
+    let value = Math.ceil(num * 6);
+    if (value === 0) {
+        value = 1;
+    }
+    return value;
 }
 
 export function rollDice(dice: Die[], rollCount: number, getRandomNumber: () => number): Die[] {
     const result = [];
     for (const die of dice) {
         if (die.locked === 'unlocked') {
-            const num = getRandomNumber();
-            let value = Math.ceil(num * 6);
-            if (value === 0) {
-                value = 1;
-            }
-            die.value = value;
+            die.value = rollDie(getRandomNumber);
         }
         if (rollCount === 3) {
             die.locked = 'permanently-locked';

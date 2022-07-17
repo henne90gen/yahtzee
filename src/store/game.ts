@@ -180,6 +180,7 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.rollCount = 0;
             state.currentPlayerIndex = 0;
             state.randomState = randomState(new Date().toISOString());
+            state.dice = initDice();
         },
         endGame: (state) => {
             const leadingPlayerIndex = getLeadingPlayerIndex(state.players);
