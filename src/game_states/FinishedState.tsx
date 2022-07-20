@@ -27,11 +27,10 @@ function WinnerCard() {
 }
 
 export default function FinishedState() {
-    const players = useSelector((state: RootState) => state.game.players!)
     return (
         <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <WinnerCard/>
-            <ScoreBoard players={players}/>
+            <ScoreBoard/>
         </div>
     );
 }
