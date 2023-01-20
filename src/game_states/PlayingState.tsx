@@ -136,17 +136,6 @@ function PlayArea() {
                 {t("playing_RollCount")} {rollCount}/3
             </div>
             <Dice dice={dice} disabled={disabled} />
-            {/*<DiceOptions*/}
-            {/*    currentPlayer={currentPlayer}*/}
-            {/*    dice={dice}*/}
-            {/*    disabled={disabled}*/}
-            {/*    selectedOption={selectedOption}*/}
-            {/*/>*/}
-            {/*<StrikeSelector*/}
-            {/*    currentPlayer={currentPlayer}*/}
-            {/*    disabled={disabled}*/}
-            {/*    selectedOption={selectedOption}*/}
-            {/*/>*/}
         </>
     );
 
@@ -170,20 +159,27 @@ function PlayArea() {
     );
 }
 
+function EndGameCard() {
+    const dispatch = useAppDispatch();
+    return (
+        <div className="grid justify-items-center justify-center bg-white w-full sm:w-3/4 mt-3 p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
+            <button
+                className="bg-red-300 rounded text-gray-700 px-3 py-2 my-3"
+                onClick={() => dispatch(endGame())}
+            >
+                {t("playing_EndGame")}
+            </button>
+        </div>
+    );
+}
+
 export default function PlayingState() {
     const dispatch = useAppDispatch();
     return (
         <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <PlayArea />
             <ScoreBoard />
-            <div className="grid gap-2 justify-items-center justify-center bg-white w-full sm:w-7/8 sm:w-3/4 mt-3 py-4 px-3 rounded md:rounded-lg shadow-lg">
-                <button
-                    className="bg-red-300 px-3 py-2 rounded text-gray-700"
-                    onClick={() => dispatch(endGame())}
-                >
-                    {t("playing_EndGame")}
-                </button>
-            </div>
+            <EndGameCard />
         </div>
     );
 }

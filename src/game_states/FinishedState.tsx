@@ -22,7 +22,7 @@ function WinnerCard() {
 function NewGameCard() {
     const dispatch = useAppDispatch();
     return (
-        <div className="flex-1 grid grid-flow-row gap-4 justify-center bg-white items-center w-full sm:w-7/8 sm:w-3/4 mt-3 p-1 md:p-10 rounded md:rounded-lg shadow-lg">
+        <div className="grid justify-items-center bg-white items-center w-full sm:w-3/4 mt-3 p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
             <button
                 className="bg-green-500 text-white rounded px-3 py-2 my-3"
                 onClick={() => dispatch(newGame())}
