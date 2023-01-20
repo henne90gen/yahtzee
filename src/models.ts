@@ -1,31 +1,34 @@
-export type GameState = 'ready' | 'playing' | 'finished';
+export type GameState = "ready" | "playing" | "finished";
 
 export type PlayerName = {
     name: string;
     isAI: boolean;
-}
+};
+
+export type ScoreValue = number | "not-set" | "strike";
+
 export type PlayerState = {
-    ones: number | null;
-    twos: number | null;
-    threes: number | null;
-    fours: number | null;
-    fives: number | null;
-    sixes: number | null;
+    ones: ScoreValue;
+    twos: ScoreValue;
+    threes: ScoreValue;
+    fours: ScoreValue;
+    fives: ScoreValue;
+    sixes: ScoreValue;
 
-    threeOfAKind: number | null;
-    fourOfAKind: number | null;
-    fullHouse: number | null;
-    smallStraight: number | null;
-    largeStraight: number | null;
+    threeOfAKind: ScoreValue;
+    fourOfAKind: ScoreValue;
+    fullHouse: ScoreValue;
+    smallStraight: ScoreValue;
+    largeStraight: ScoreValue;
 
-    chance: number | null;
-    yahtzee: number | null;
+    chance: ScoreValue;
+    yahtzee: ScoreValue;
 };
 export type Player = PlayerName & PlayerState;
 
 export type Die = {
     value: number;
-    locked: 'unlocked' | 'locked' | 'permanently-locked';
+    locked: "unlocked" | "locked" | "permanently-locked";
 };
 
 export type EndTurnOption =
@@ -42,16 +45,18 @@ export type EndTurnOption =
     | "largeStraight"
     | "yahtzee"
     | "chance";
-export const AllEndTurnOptions: EndTurnOption[] = ["ones"
-    , "twos"
-    , "threes"
-    , "fours"
-    , "fives"
-    , "sixes"
-    , "threeOfAKind"
-    , "fourOfAKind"
-    , "fullHouse"
-    , "smallStraight"
-    , "largeStraight"
-    , "yahtzee"
-    , "chance"];
+export const AllEndTurnOptions: EndTurnOption[] = [
+    "ones",
+    "twos",
+    "threes",
+    "fours",
+    "fives",
+    "sixes",
+    "threeOfAKind",
+    "fourOfAKind",
+    "fullHouse",
+    "smallStraight",
+    "largeStraight",
+    "yahtzee",
+    "chance",
+];

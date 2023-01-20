@@ -12,6 +12,7 @@
     "scripts": {
         "start": "vite",
         "build": "tsc && vite build",
+        "types": "tsc",
         "test": "vitest",
         "test-ci": "vitest run"
     },

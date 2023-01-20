@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { loadFromLocalStorage, localStorageMiddleware } from "./persistence";
 import { changeLanguage } from "../translations";
 import { settingsReducer } from "./settings";
+import { statisticsReducer} from "./statistics";
 import { gameReducer } from "./game";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +12,7 @@ changeLanguage(preloadedState.settings.language);
 export const store = configureStore({
     reducer: {
         game: gameReducer,
+        statistics: statisticsReducer,
         settings: settingsReducer,
     },
     preloadedState,

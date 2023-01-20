@@ -1,4 +1,4 @@
-import { Die, EndTurnOption, Player, PlayerName, PlayerState } from "./models";
+import { Die, EndTurnOption, Player, PlayerName, PlayerState, ScoreValue } from "./models";
 import "./random";
 
 export function isUpperBonusAchievable(player: PlayerState): boolean {
@@ -7,12 +7,12 @@ export function isUpperBonusAchievable(player: PlayerState): boolean {
     }
 
     let possibleResult = 0;
-    possibleResult += player.ones !== null ? player.ones : 5;
-    possibleResult += player.twos !== null ? player.twos : 10;
-    possibleResult += player.threes !== null ? player.threes : 15;
-    possibleResult += player.fours !== null ? player.fours : 20;
-    possibleResult += player.fives !== null ? player.fives : 25;
-    possibleResult += player.sixes !== null ? player.sixes : 30;
+    possibleResult += valueOrDefault(player.ones, 5);
+    possibleResult += valueOrDefault(player.twos, 10);
+    possibleResult += valueOrDefault(player.threes, 15);
+    possibleResult += valueOrDefault(player.fours, 20);
+    possibleResult += valueOrDefault(player.fives, 25);
+    possibleResult += valueOrDefault(player.sixes, 30);
     return possibleResult >= 63;
 }
 
@@ -20,26 +20,31 @@ export function hasPlayerUpperBonus(player: PlayerState): boolean {
     return upperScore(player) >= 63;
 }
 
+function valueOrDefault(
+    value: ScoreValue,
+    defaultValue: number
+): number {
+    if (value === "not-set") {
+        return defaultValue;
+    }
+    if (value === "strike") {
+        return defaultValue;
+    }
+    return value;
+}
+
+function valueOrZero(value: ScoreValue): number {
+    return valueOrDefault(value, 0);
+}
+
 export function upperScore(player: PlayerState): number {
     let result = 0;
-    if (player.ones !== null) {
-        result += player.ones;
-    }
-    if (player.twos !== null) {
-        result += player.twos;
-    }
-    if (player.threes !== null) {
-        result += player.threes;
-    }
-    if (player.fours !== null) {
-        result += player.fours;
-    }
-    if (player.fives !== null) {
-        result += player.fives;
-    }
-    if (player.sixes !== null) {
-        result += player.sixes;
-    }
+    result += valueOrZero(player.ones);
+    result += valueOrZero(player.twos);
+    result += valueOrZero(player.threes);
+    result += valueOrZero(player.fours);
+    result += valueOrZero(player.fives);
+    result += valueOrZero(player.sixes);
     return result;
 }
 
@@ -53,27 +58,13 @@ export function totalUpperScore(player: PlayerState): number {
 
 export function totalLowerScore(player: PlayerState): number {
     let result = 0;
-    if (player.threeOfAKind !== null) {
-        result += player.threeOfAKind;
-    }
-    if (player.fourOfAKind !== null) {
-        result += player.fourOfAKind;
-    }
-    if (player.fullHouse !== null) {
-        result += player.fullHouse;
-    }
-    if (player.smallStraight !== null) {
-        result += player.smallStraight;
-    }
-    if (player.largeStraight !== null) {
-        result += player.largeStraight;
-    }
-    if (player.chance !== null) {
-        result += player.chance;
-    }
-    if (player.yahtzee !== null) {
-        result += player.yahtzee;
-    }
+    result += valueOrZero(player.threeOfAKind);
+    result += valueOrZero(player.fourOfAKind);
+    result += valueOrZero(player.fullHouse);
+    result += valueOrZero(player.smallStraight);
+    result += valueOrZero(player.largeStraight);
+    result += valueOrZero(player.chance);
+    result += valueOrZero(player.yahtzee);
     return result;
 }
 
@@ -87,21 +78,21 @@ export function initPlayers(playerNames: PlayerName[]): Player[] {
         players.push({
             ...playerName,
 
-            ones: null,
-            twos: null,
-            threes: null,
-            fours: null,
-            fives: null,
-            sixes: null,
+            ones: "not-set",
+            twos: "not-set",
+            threes: "not-set",
+            fours: "not-set",
+            fives: "not-set",
+            sixes: "not-set",
 
-            threeOfAKind: null,
-            fourOfAKind: null,
-            fullHouse: null,
-            smallStraight: null,
-            largeStraight: null,
+            threeOfAKind: "not-set",
+            fourOfAKind: "not-set",
+            fullHouse: "not-set",
+            smallStraight: "not-set",
+            largeStraight: "not-set",
 
-            chance: null,
-            yahtzee: null,
+            chance: "not-set",
+            yahtzee: "not-set",
         });
     }
     return players;
@@ -166,25 +157,25 @@ export function getAvailableOptions(
     dice: Die[]
 ): EndTurnOption[] {
     const options: EndTurnOption[] = [];
-    if (dice.filter((d) => d.value === 1).length > 0 && player.ones === null) {
+    if (dice.filter((d) => d.value === 1).length > 0 && player.ones === "not-set") {
         options.push("ones");
     }
-    if (dice.filter((d) => d.value === 2).length > 0 && player.twos === null) {
+    if (dice.filter((d) => d.value === 2).length > 0 && player.twos === "not-set") {
         options.push("twos");
     }
     if (
         dice.filter((d) => d.value === 3).length > 0 &&
-        player.threes === null
+        player.threes === "not-set"
     ) {
         options.push("threes");
     }
-    if (dice.filter((d) => d.value === 4).length > 0 && player.fours === null) {
+    if (dice.filter((d) => d.value === 4).length > 0 && player.fours === "not-set") {
         options.push("fours");
     }
-    if (dice.filter((d) => d.value === 5).length > 0 && player.fives === null) {
+    if (dice.filter((d) => d.value === 5).length > 0 && player.fives === "not-set") {
         options.push("fives");
     }
-    if (dice.filter((d) => d.value === 6).length > 0 && player.sixes === null) {
+    if (dice.filter((d) => d.value === 6).length > 0 && player.sixes === "not-set") {
         options.push("sixes");
     }
 
@@ -194,13 +185,13 @@ export function getAvailableOptions(
         numberCounts[die.value - 1]++;
     }
     for (let numCount of numberCounts) {
-        if (numCount >= 3 && player.threeOfAKind === null) {
+        if (numCount >= 3 && player.threeOfAKind === "not-set") {
             options.push("threeOfAKind");
         }
-        if (numCount >= 4 && player.fourOfAKind === null) {
+        if (numCount >= 4 && player.fourOfAKind === "not-set") {
             options.push("fourOfAKind");
         }
-        if (numCount >= 5 && player.yahtzee === null) {
+        if (numCount >= 5 && player.yahtzee === "not-set") {
             options.push("yahtzee");
         }
     }
@@ -211,7 +202,7 @@ export function getAvailableOptions(
     if (
         twoCount.length === 1 &&
         threeCount.length === 1 &&
-        player.fullHouse === null
+        player.fullHouse === "not-set"
     ) {
         options.push("fullHouse");
     }
@@ -233,16 +224,16 @@ export function getAvailableOptions(
     if (currentRun > longestRun) {
         longestRun = currentRun;
     }
-    if (longestRun >= 3 && player.smallStraight === null) {
+    if (longestRun >= 3 && player.smallStraight === "not-set") {
         options.push("smallStraight");
     }
-    if (longestRun >= 4 && player.largeStraight === null) {
+    if (longestRun >= 4 && player.largeStraight === "not-set") {
         options.push("largeStraight");
     }
 
     if (
         dice.map((d) => d.value).filter((v) => v === 0).length === 0 &&
-        player.chance === null
+        player.chance === "not-set"
     ) {
         options.push("chance");
     }
@@ -308,93 +299,93 @@ export function playerCanStrike(
 ): boolean {
     switch (option) {
         case "ones":
-            return player.ones === null;
+            return player.ones === "not-set";
         case "twos":
-            return player.twos === null;
+            return player.twos === "not-set";
         case "threes":
-            return player.threes === null;
+            return player.threes === "not-set";
         case "fours":
-            return player.fours === null;
+            return player.fours === "not-set";
         case "fives":
-            return player.fives === null;
+            return player.fives === "not-set";
         case "sixes":
-            return player.sixes === null;
+            return player.sixes === "not-set";
         case "threeOfAKind":
-            return player.threeOfAKind === null;
+            return player.threeOfAKind === "not-set";
         case "fourOfAKind":
-            return player.fourOfAKind === null;
+            return player.fourOfAKind === "not-set";
         case "fullHouse":
-            return player.fullHouse === null;
+            return player.fullHouse === "not-set";
         case "smallStraight":
-            return player.smallStraight === null;
+            return player.smallStraight === "not-set";
         case "largeStraight":
-            return player.largeStraight === null;
+            return player.largeStraight === "not-set";
         case "yahtzee":
-            return player.yahtzee === null;
+            return player.yahtzee === "not-set";
         case "chance":
-            return player.chance === null;
+            return player.chance === "not-set";
     }
 }
 
 export function updateScoreStrike(player: PlayerState, option: EndTurnOption) {
     switch (option) {
         case "ones":
-            player.ones = 0;
+            player.ones = "strike";
             break;
         case "twos":
-            player.twos = 0;
+            player.twos = "strike";
             break;
         case "threes":
-            player.threes = 0;
+            player.threes = "strike";
             break;
         case "fours":
-            player.fours = 0;
+            player.fours = "strike";
             break;
         case "fives":
-            player.fives = 0;
+            player.fives = "strike";
             break;
         case "sixes":
-            player.sixes = 0;
+            player.sixes = "strike";
             break;
         case "threeOfAKind":
-            player.threeOfAKind = 0;
+            player.threeOfAKind = "strike";
             break;
         case "fourOfAKind":
-            player.fourOfAKind = 0;
+            player.fourOfAKind = "strike";
             break;
         case "fullHouse":
-            player.fullHouse = 0;
+            player.fullHouse = "strike";
             break;
         case "smallStraight":
-            player.smallStraight = 0;
+            player.smallStraight = "strike";
             break;
         case "largeStraight":
-            player.largeStraight = 0;
+            player.largeStraight = "strike";
             break;
         case "yahtzee":
-            player.yahtzee = 0;
+            player.yahtzee = "strike";
             break;
         case "chance":
-            player.chance = 0;
+            player.chance = "strike";
             break;
     }
 }
 
 function isDonePlaying(player: Player): boolean {
     return (
-        player.ones !== null &&
-        player.twos !== null &&
-        player.threes !== null &&
-        player.fours !== null &&
-        player.fives !== null &&
-        player.sixes !== null &&
-        player.threeOfAKind !== null &&
-        player.fourOfAKind !== null &&
-        player.fullHouse !== null &&
-        player.smallStraight !== null &&
-        player.largeStraight !== null &&
-        player.chance !== null &&
-        player.yahtzee !== null
+        player.ones !== "not-set" &&
+        player.twos !== "not-set" &&
+        player.threes !== "not-set" &&
+        player.fours !== "not-set" &&
+        player.fives !== "not-set" &&
+        player.sixes !== "not-set" &&
+        player.threeOfAKind !== "not-set" &&
+        player.fourOfAKind !== "not-set" &&
+        player.fullHouse !== "not-set" &&
+        player.smallStraight !== "not-set" &&
+        player.largeStraight !== "not-set" &&
+        player.chance !== "not-set" &&
+        player.yahtzee !== "not-set"
     );
 }
 

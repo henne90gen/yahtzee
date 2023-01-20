@@ -1,4 +1,4 @@
-import { EndTurnOption, Player } from "./models";
+import { EndTurnOption, Player, ScoreValue } from "./models";
 import {
     getAvailableOptions,
     hasPlayerUpperBonus,
@@ -66,10 +66,14 @@ function Scores(props: { player: Player }) {
     }
 
     function ScoreCell(props: {
-        score: number | null;
+        score: ScoreValue;
         endTurnOption: EndTurnOption;
     }) {
-        if (props.score !== null) {
+        if (props.score === "strike") {
+            return <>{"-"}</>;
+        }
+
+        if (props.score !== "not-set") {
             return <>{props.score}</>;
         }
 

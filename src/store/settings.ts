@@ -1,6 +1,5 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {CaseReducer, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {changeLanguage, Language} from "../translations";
-import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
 
 export interface SettingsData {
     isSettingsOpen: boolean;
