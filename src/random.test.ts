@@ -1,3 +1,4 @@
+import { it, describe, expect } from 'vitest';
 import {random, randomState} from "./random";
 
 describe("random", () => {

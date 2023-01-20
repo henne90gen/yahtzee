@@ -1,3 +1,4 @@
+import { it, describe, expect } from 'vitest';
 import {getAvailableOptions, removeIndexAndUpdateLaterIndices, updateScore} from "./logic";
 import {Die} from "./models";
 
