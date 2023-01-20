@@ -6,7 +6,6 @@ import {
     openSettings,
     updateLanguageSetting,
 } from "./store/settings";
-import React from "react";
 
 export function SettingsView() {
     const dispatch = useDispatch();
