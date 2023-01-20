@@ -51,8 +51,8 @@ function Scores(props: { player: Player }) {
     const dispatch = useAppDispatch();
     const currentPlayer = useAppSelector(selectCurrentPlayer);
     const winner = useAppSelector(selectWinner);
-    const dice = useAppSelector(state => state.game.dice);
-    const rollCount = useAppSelector(state => state.game.rollCount);
+    const dice = useAppSelector((state) => state.game.dice);
+    const rollCount = useAppSelector((state) => state.game.rollCount);
     const availableOptions = getAvailableOptions(currentPlayer, dice);
     let classes =
         "justify-self-center border-l-2 h-full w-full text-center flex justify-center items-center border-black";
@@ -73,7 +73,7 @@ function Scores(props: { player: Player }) {
             return <>{props.score}</>;
         }
 
-        if (player !== currentPlayer || player === winner) {
+        if (player !== currentPlayer || winner !== null) {
             return null;
         }
 
@@ -88,7 +88,9 @@ function Scores(props: { player: Player }) {
         return (
             <>
                 <button
-                    className={"enabled:bg-green-500 disabled:bg-green-200 disabled:cursor-not-allowed text-white rounded px-3 mr-2"}
+                    className={
+                        "enabled:bg-green-500 disabled:bg-green-200 disabled:cursor-not-allowed text-white rounded px-3 mr-2"
+                    }
                     disabled={disableEnterButton}
                     onClick={() => selectedOption(props.endTurnOption, false)}
                 >
@@ -182,7 +184,7 @@ function Scores(props: { player: Player }) {
 }
 
 export default function ScoreBoard(props: { winner?: Player }) {
-    const players = useAppSelector(state => state.game.players);
+    const players = useAppSelector((state) => state.game.players);
     return (
         <div
             className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg shadow-lg"
