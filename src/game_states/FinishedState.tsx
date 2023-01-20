@@ -1,12 +1,12 @@
 import { totalScore } from "../logic";
 import ScoreBoard from "../ScoreBoard";
-import { useDispatch, useSelector } from "react-redux";
 import { newGame } from "../store/game";
+import { useAppDispatch, useAppSelector } from "../store/store";
 import { selectWinner } from "../store/selectors";
 import t from "../translations";
 
 function WinnerCard() {
-    const winner = useSelector(selectWinner)!;
+    const winner = useAppSelector(selectWinner)!;
     return (
         <div className="flex-1 grid grid-flow-row gap-4 justify-center bg-white items-center w-full sm:w-7/8 sm:w-3/4 mb-3 p-3 md:p-10 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-3xl font-bold">
@@ -20,7 +20,7 @@ function WinnerCard() {
 }
 
 function NewGameCard() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     return (
         <div className="flex-1 grid grid-flow-row gap-4 justify-center bg-white items-center w-full sm:w-7/8 sm:w-3/4 mt-3 p-1 md:p-10 rounded md:rounded-lg shadow-lg">
             <button

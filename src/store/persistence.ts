@@ -12,11 +12,11 @@ function initialData(): Data {
 
 export function loadFromLocalStorage(): Data {
     try {
-        const serialisedState = localStorage.getItem(GAME_STATE_KEY);
-        if (serialisedState === null) {
+        const serializedState = localStorage.getItem(GAME_STATE_KEY);
+        if (serializedState === null) {
             return initialData();
         }
-        const result = JSON.parse(serialisedState);
+        const result = JSON.parse(serializedState);
         // TODO check that all properties are present, otherwise create a fresh initial state
         return result;
     } catch (e) {

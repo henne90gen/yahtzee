@@ -9,8 +9,7 @@ import {
     upperScore,
 } from "./logic";
 import t from "./translations";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./store/store";
+import { useAppDispatch, useAppSelector } from "./store/store";
 import { endTurnThunk } from "./store/game";
 import { selectCurrentPlayer, selectWinner } from "./store/selectors";
 
@@ -49,11 +48,11 @@ function TableHeader() {
 
 function Scores(props: { player: Player }) {
     const { player } = props;
-    const dispatch = useDispatch();
-    const currentPlayer = useSelector(selectCurrentPlayer);
-    const winner = useSelector(selectWinner);
-    const dice = useSelector((state: RootState) => state.game.dice);
-    const rollCount = useSelector((state: RootState) => state.game.rollCount);
+    const dispatch = useAppDispatch();
+    const currentPlayer = useAppSelector(selectCurrentPlayer);
+    const winner = useAppSelector(selectWinner);
+    const dice = useAppSelector(state => state.game.dice);
+    const rollCount = useAppSelector(state => state.game.rollCount);
     const availableOptions = getAvailableOptions(currentPlayer, dice);
     let classes =
         "justify-self-center border-l-2 h-full w-full text-center flex justify-center items-center border-black";
@@ -78,25 +77,23 @@ function Scores(props: { player: Player }) {
             return null;
         }
 
-        const showEnterButton =
-            availableOptions.find((opt) => opt === props.endTurnOption) !==
-            undefined;
         if (rollCount === 0) {
             return null;
         }
 
+        const disableEnterButton =
+            availableOptions.find((opt) => opt === props.endTurnOption) ===
+            undefined;
+
         return (
             <>
-                {showEnterButton ? (
-                    <button
-                        className={"bg-green-500 text-white rounded px-3 mr-2"}
-                        onClick={() =>
-                            selectedOption(props.endTurnOption, false)
-                        }
-                    >
-                        Enter
-                    </button>
-                ) : null}
+                <button
+                    className={"enabled:bg-green-500 disabled:bg-green-200 disabled:cursor-not-allowed text-white rounded px-3 mr-2"}
+                    disabled={disableEnterButton}
+                    onClick={() => selectedOption(props.endTurnOption, false)}
+                >
+                    Enter
+                </button>
                 <button
                     className={"bg-red-400 text-white rounded px-3 ml-2"}
                     onClick={() => selectedOption(props.endTurnOption, true)}
@@ -185,7 +182,7 @@ function Scores(props: { player: Player }) {
 }
 
 export default function ScoreBoard(props: { winner?: Player }) {
-    const players = useSelector((state: RootState) => state.game.players);
+    const players = useAppSelector(state => state.game.players);
     return (
         <div
             className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg shadow-lg"

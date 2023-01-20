@@ -1,14 +1,13 @@
 import ReadyState from "./game_states/ReadyState";
 import PlayingState from "./game_states/PlayingState";
 import FinishedState from "./game_states/FinishedState";
-import { useSelector } from "react-redux";
-import { RootState } from "./store/store";
+import { useAppSelector } from "./store/store";
 import { SettingsButton, SettingsView } from "./SettingsView";
 
 function App() {
-    const state = useSelector((state: RootState) => state.game.currentState);
-    const isSettingsOpen = useSelector(
-        (state: RootState) => state.settings.isSettingsOpen
+    const state = useAppSelector(state => state.game.currentState);
+    const isSettingsOpen = useAppSelector(
+        (state) => state.settings.isSettingsOpen
     );
 
     let view = null;

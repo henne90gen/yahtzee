@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./store/store";
+import { useAppDispatch, useAppSelector } from "./store/store";
 import t, { Language } from "./translations";
 import {
     closeSettings,
@@ -8,8 +7,8 @@ import {
 } from "./store/settings";
 
 export function SettingsView() {
-    const dispatch = useDispatch();
-    const language = useSelector((state: RootState) => state.settings.language);
+    const dispatch = useAppDispatch();
+    const language = useAppSelector((state) => state.settings.language);
     return (
         <div className="pt-10 sm:pt-14 md:pt-20 flex justify-center">
             <div className="grid gap-20 grid-cols-2 justify-center lg:w-1/2 xl:w-1/3 rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white">
@@ -36,7 +35,7 @@ export function SettingsView() {
 }
 
 export function SettingsButton(props: { isSettingsOpen: boolean }) {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const buttonClasses =
         "absolute top-3 right-3 sm:top-4 sm:right-7 md:top-8 md:right-10";
     if (props.isSettingsOpen) {

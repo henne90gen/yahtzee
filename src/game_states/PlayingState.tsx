@@ -2,8 +2,7 @@ import { Die } from "../models";
 import React, { ReactElement } from "react";
 import ScoreBoard from "../ScoreBoard";
 import { doDiceRoll, endGame, onDieLockChange } from "../store/game";
-import { RootState } from "../store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/store";
 import t from "../translations";
 import { selectCurrentPlayer } from "../store/selectors";
 
@@ -95,7 +94,7 @@ function DieSvg(props: {
 
 function Dice(props: { dice: Die[]; disabled: boolean }) {
     const { dice, disabled } = props;
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     if (dice === null) {
         return null;
     }
@@ -120,10 +119,10 @@ function Dice(props: { dice: Die[]; disabled: boolean }) {
 }
 
 function PlayArea() {
-    const dice = useSelector((state: RootState) => state.game.dice);
-    const rollCount = useSelector((state: RootState) => state.game.rollCount);
-    const currentPlayer = useSelector(selectCurrentPlayer);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
+    const dice = useAppSelector((state) => state.game.dice);
+    const rollCount = useAppSelector((state) => state.game.rollCount);
+    const currentPlayer = useAppSelector(selectCurrentPlayer);
 
     const onRollDiceClick = (event: React.MouseEvent) => {
         event.preventDefault();
@@ -172,7 +171,7 @@ function PlayArea() {
 }
 
 export default function PlayingState() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     return (
         <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <PlayArea />

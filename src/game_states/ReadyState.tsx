@@ -1,5 +1,4 @@
 import { PlayerName } from "../models";
-import { useDispatch, useSelector } from "react-redux";
 import {
     addInvalidPlayerName,
     addPlayerName,
@@ -9,7 +8,7 @@ import {
     updatePlayerName,
 } from "../store/game";
 import t from "../translations";
-import { RootState } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
 function PlayerAvatar(props: {
     player: PlayerName;
@@ -79,8 +78,8 @@ function PlayerAvatar(props: {
 }
 
 export default function ReadyState() {
-    const state = useSelector((state: RootState) => state.game.readyState);
-    const dispatch = useDispatch();
+    const state = useAppSelector(state => state.game.readyState);
+    const dispatch = useAppDispatch();
 
     function startGameClicked() {
         let allNamesValid = true;

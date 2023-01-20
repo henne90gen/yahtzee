@@ -1,34 +1,52 @@
-import {AllEndTurnOptions, Die, EndTurnOption, GameState, Player, PlayerName} from "../models";
+import {
+    AllEndTurnOptions,
+    Die,
+    EndTurnOption,
+    GameState,
+    Player,
+    PlayerName,
+} from "../models";
 import {
     getAvailableOptions,
-    getLeadingPlayerIndex, getWinningPlayerIndex,
+    getLeadingPlayerIndex,
+    getWinningPlayerIndex,
     initDice,
-    initPlayers, playerCanStrike,
-    removeIndexAndUpdateLaterIndices, rollDice, toggleLock, updateScore,
-    updateScoreStrike
+    initPlayers,
+    playerCanStrike,
+    removeIndexAndUpdateLaterIndices,
+    rollDice,
+    toggleLock,
+    updateScore,
+    updateScoreStrike,
 } from "../logic";
-import {CaseReducer} from "@reduxjs/toolkit/src/createReducer";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {random, randomState} from "../random";
-import {RootState} from "./store";
+import { CaseReducer } from "@reduxjs/toolkit/src/createReducer";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { random, randomState } from "../random";
+import { AppDispatch, RootState } from "./store";
 
 export interface GameData {
-    currentState: GameState
+    currentState: GameState;
     readyState: {
-        names: PlayerName[]
-        invalidNames: number[]
-    }
-    players: Player[]
-    currentPlayerIndex: number
-    dice: Die[]
-    rollCount: number
-    winningPlayerIndex: number
-    randomState: number
+        names: PlayerName[];
+        invalidNames: number[];
+    };
+    players: Player[];
+    currentPlayerIndex: number;
+    dice: Die[];
+    rollCount: number;
+    winningPlayerIndex: number;
+    randomState: number;
 }
 
 export function initialState(): GameData {
     return {
-        readyState: {names: [{name: "Alice", isAI: false}, {name: "Bob", isAI: false}], invalidNames: []},
+        readyState: {
+            names: [
+                { name: "Alice", isAI: false },
+                { name: "Bob", isAI: false },
+            ],
+            invalidNames: [],
+        },
         currentState: "ready",
         players: [],
         currentPlayerIndex: 0,
@@ -36,23 +54,29 @@ export function initialState(): GameData {
         dice: initDice(),
         rollCount: 0,
         randomState: randomState(new Date().toISOString()),
-    }
+    };
 }
 
 interface GameReducers {
-    [K: string]: CaseReducer<GameData, any>
+    [K: string]: CaseReducer<GameData, any>;
 
-    addPlayerName: CaseReducer<GameData, PayloadAction<PlayerName>>
-    removePlayerName: CaseReducer<GameData, PayloadAction<number>>
-    updatePlayerName: CaseReducer<GameData, PayloadAction<{ index: number, player: PlayerName }>>
-    addInvalidPlayerName: CaseReducer<GameData, PayloadAction<number>>
-    removeInvalidPlayerName: CaseReducer<GameData, PayloadAction<number>>
-    startGame: CaseReducer<GameData>
-    newGame: CaseReducer<GameData>
-    endGame: CaseReducer<GameData>
-    endTurn: CaseReducer<GameData, PayloadAction<{ option: EndTurnOption, strike: boolean }>>
-    doDiceRoll: CaseReducer<GameData>
-    onDieLockChange: CaseReducer<GameData, PayloadAction<number>>
+    addPlayerName: CaseReducer<GameData, PayloadAction<PlayerName>>;
+    removePlayerName: CaseReducer<GameData, PayloadAction<number>>;
+    updatePlayerName: CaseReducer<
+        GameData,
+        PayloadAction<{ index: number; player: PlayerName }>
+    >;
+    addInvalidPlayerName: CaseReducer<GameData, PayloadAction<number>>;
+    removeInvalidPlayerName: CaseReducer<GameData, PayloadAction<number>>;
+    startGame: CaseReducer<GameData>;
+    newGame: CaseReducer<GameData>;
+    endGame: CaseReducer<GameData>;
+    endTurn: CaseReducer<
+        GameData,
+        PayloadAction<{ option: EndTurnOption; strike: boolean }>
+    >;
+    doDiceRoll: CaseReducer<GameData>;
+    onDieLockChange: CaseReducer<GameData, PayloadAction<number>>;
 }
 
 async function timeout(t: number, func: () => void): Promise<void> {
@@ -64,17 +88,19 @@ async function timeout(t: number, func: () => void): Promise<void> {
     });
 }
 
-export function endTurnThunk(payload: { option: EndTurnOption, strike: boolean }) {
-    return (dispatch: any) => {
+export function endTurnThunk(payload: {
+    option: EndTurnOption;
+    strike: boolean;
+}) {
+    return (dispatch: AppDispatch) => {
         dispatch(gameSlice.actions.endTurn(payload));
         dispatch(doAiTurnThunk());
-    }
+    };
 }
 
 function doAiTurnThunk() {
-    // TODO add proper type for dispatch
-    return async (dispatch: any, getState: () => RootState) => {
-        const {game} = getState();
+    return async (dispatch: AppDispatch, getState: () => RootState) => {
+        const { game } = getState();
         const currentPlayer = game.players[game.currentPlayerIndex];
         if (!currentPlayer.isAI) {
             return;
@@ -88,21 +114,30 @@ function doAiTurnThunk() {
             let hasEndedTurn = false;
             await timeout(1000, () => {
                 // TODO implement proper AI here
-                const {game} = getState();
+                const { game } = getState();
                 const currentPlayer = game.players[game.currentPlayerIndex];
-                const availableOptions = getAvailableOptions(currentPlayer, game.dice);
+                const availableOptions = getAvailableOptions(
+                    currentPlayer,
+                    game.dice
+                );
                 if (availableOptions.length !== 0) {
-                    dispatch(endTurnThunk({
-                        option: availableOptions[0],
-                        strike: false,
-                    }));
+                    dispatch(
+                        endTurnThunk({
+                            option: availableOptions[0],
+                            strike: false,
+                        })
+                    );
                     hasEndedTurn = true;
                 } else {
-                    const strikeOptions = AllEndTurnOptions.filter(option => playerCanStrike(currentPlayer, option));
-                    dispatch(endTurnThunk({
-                        option: strikeOptions[0],
-                        strike: true,
-                    }));
+                    const strikeOptions = AllEndTurnOptions.filter((option) =>
+                        playerCanStrike(currentPlayer, option)
+                    );
+                    dispatch(
+                        endTurnThunk({
+                            option: strikeOptions[0],
+                            strike: true,
+                        })
+                    );
                     hasEndedTurn = true;
                 }
             });
@@ -110,21 +145,28 @@ function doAiTurnThunk() {
                 break;
             }
         }
-    }
+    };
 }
 
-function endTurnFunc(state: GameData, payload: { option: EndTurnOption, strike: boolean }) {
-    const {option, strike} = payload;
+function endTurnFunc(
+    state: GameData,
+    payload: { option: EndTurnOption; strike: boolean }
+) {
+    const { option, strike } = payload;
 
     if (strike) {
-        updateScoreStrike(state.players[state.currentPlayerIndex], option)
+        updateScoreStrike(state.players[state.currentPlayerIndex], option);
     } else {
-        updateScore(state.players[state.currentPlayerIndex], option, state.dice);
+        updateScore(
+            state.players[state.currentPlayerIndex],
+            option,
+            state.dice
+        );
     }
 
     state.dice = initDice();
     state.rollCount = 0;
-    let tmp = state.currentPlayerIndex
+    let tmp = state.currentPlayerIndex;
     tmp++;
     tmp %= state.players.length;
     state.currentPlayerIndex = tmp;
@@ -138,11 +180,10 @@ function endTurnFunc(state: GameData, payload: { option: EndTurnOption, strike: 
 }
 
 export function startGameThunk() {
-    // TODO add proper type for dispatch
-    return (dispatch: any) => {
+    return (dispatch: AppDispatch) => {
         dispatch(gameSlice.actions.startGame());
         dispatch(doAiTurnThunk());
-    }
+    };
 }
 
 const gameSlice = createSlice<GameData, GameReducers, "game">({
@@ -150,24 +191,31 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
     initialState: initialState(),
     reducers: {
         addPlayerName: (state, action: PayloadAction<PlayerName>) => {
-            state.readyState.names.push(action.payload)
+            state.readyState.names.push(action.payload);
         },
         removePlayerName: (state, action: PayloadAction<number>) => {
             state.readyState.names.splice(action.payload, 1);
         },
-        updatePlayerName: (state, action: PayloadAction<{ index: number, player: PlayerName }>) => {
-            state.readyState.names[action.payload.index] = action.payload.player;
+        updatePlayerName: (
+            state,
+            action: PayloadAction<{ index: number; player: PlayerName }>
+        ) => {
+            state.readyState.names[action.payload.index] =
+                action.payload.player;
         },
         addInvalidPlayerName: (state, action: PayloadAction<number>) => {
             for (let i of state.readyState.invalidNames) {
                 if (i === action.payload) {
-                    return
+                    return;
                 }
             }
             state.readyState.invalidNames.push(action.payload);
         },
         removeInvalidPlayerName: (state, action: PayloadAction<number>) => {
-            state.readyState.invalidNames = removeIndexAndUpdateLaterIndices(state.readyState.invalidNames, action.payload);
+            state.readyState.invalidNames = removeIndexAndUpdateLaterIndices(
+                state.readyState.invalidNames,
+                action.payload
+            );
         },
         startGame: (state) => {
             state.currentState = "playing";
@@ -187,14 +235,19 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.winningPlayerIndex = leadingPlayerIndex!;
             state.currentState = "finished";
         },
-        endTurn: (state: GameData, action: PayloadAction<{ option: EndTurnOption, strike: boolean }>) => {
+        endTurn: (
+            state: GameData,
+            action: PayloadAction<{ option: EndTurnOption; strike: boolean }>
+        ) => {
             endTurnFunc(state, action.payload);
         },
         doDiceRoll: (state) => {
             state.rollCount += 1;
 
             function getRandomNumber() {
-                const [newRandomState, randomNumber] = random(state.randomState);
+                const [newRandomState, randomNumber] = random(
+                    state.randomState
+                );
                 state.randomState = newRandomState;
                 return randomNumber;
             }
@@ -202,7 +255,11 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
             state.dice = rollDice(state.dice, state.rollCount, getRandomNumber);
         },
         onDieLockChange: (state, action: PayloadAction<number>) => {
-            state.dice = toggleLock(state.dice, action.payload);
+            state.dice = toggleLock(
+                state.rollCount,
+                state.dice,
+                action.payload
+            );
         },
     },
 });
