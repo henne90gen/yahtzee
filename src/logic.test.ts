@@ -1,6 +1,6 @@
 import { it, describe, expect } from 'vitest';
 import {getAvailableOptions, removeIndexAndUpdateLaterIndices, updateScore} from "./logic";
-import {Die, EndTurnOption} from "./models";
+import {Die, ScoreKey} from "./models";
 
 function d(v: number): Die {
     return {value: v, locked: "unlocked"};
@@ -63,20 +63,20 @@ describe('getAvailableOptions', () => {
 
 describe("updateScore", () => {
     it.each([
-        ["ones" as EndTurnOption, [d(1), d(1), d(2), d(5), d(4)], 2],
-        ["twos" as EndTurnOption, [d(1), d(2), d(2), d(5), d(4)], 4],
-        ["threes" as EndTurnOption, [d(1), d(3), d(3), d(5), d(4)], 6],
-        ["fours" as EndTurnOption, [d(1), d(2), d(4), d(5), d(4)], 8],
-        ["fives" as EndTurnOption, [d(1), d(2), d(5), d(5), d(4)], 10],
-        ["sixes" as EndTurnOption, [d(1), d(6), d(6), d(5), d(4)], 12],
-        ["threeOfAKind" as EndTurnOption, [d(1), d(6), d(6), d(6), d(4)], 23],
-        ["fourOfAKind" as EndTurnOption, [d(1), d(6), d(6), d(6), d(6)], 25],
-        ["fullHouse" as EndTurnOption, [d(2), d(2), d(3), d(3), d(3)], 25],
-        ["smallStraight" as EndTurnOption, [d(1), d(2), d(3), d(4), d(6)], 30],
-        ["largeStraight" as EndTurnOption, [d(1), d(2), d(3), d(4), d(5)], 40],
-        ["yahtzee" as EndTurnOption, [d(1), d(1), d(1), d(1), d(1)], 50],
-        ["chance" as EndTurnOption, [d(1), d(2), d(3), d(4), d(6)], 16],
-    ])("updates numbers correctly: %s", (nameOfNumber: EndTurnOption, dice: Die[], expected: number) => {
+        ["ones" as ScoreKey, [d(1), d(1), d(2), d(5), d(4)], 2],
+        ["twos" as ScoreKey, [d(1), d(2), d(2), d(5), d(4)], 4],
+        ["threes" as ScoreKey, [d(1), d(3), d(3), d(5), d(4)], 6],
+        ["fours" as ScoreKey, [d(1), d(2), d(4), d(5), d(4)], 8],
+        ["fives" as ScoreKey, [d(1), d(2), d(5), d(5), d(4)], 10],
+        ["sixes" as ScoreKey, [d(1), d(6), d(6), d(5), d(4)], 12],
+        ["threeOfAKind" as ScoreKey, [d(1), d(6), d(6), d(6), d(4)], 23],
+        ["fourOfAKind" as ScoreKey, [d(1), d(6), d(6), d(6), d(6)], 25],
+        ["fullHouse" as ScoreKey, [d(2), d(2), d(3), d(3), d(3)], 25],
+        ["smallStraight" as ScoreKey, [d(1), d(2), d(3), d(4), d(6)], 30],
+        ["largeStraight" as ScoreKey, [d(1), d(2), d(3), d(4), d(5)], 40],
+        ["yahtzee" as ScoreKey, [d(1), d(1), d(1), d(1), d(1)], 50],
+        ["chance" as ScoreKey, [d(1), d(2), d(3), d(4), d(6)], 16],
+    ])("updates numbers correctly: %s", (nameOfNumber: ScoreKey, dice: Die[], expected: number) => {
         const player = updateScore(p({}), nameOfNumber, dice)
         expect(player[nameOfNumber]).toEqual(expected);
     });

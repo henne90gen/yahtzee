@@ -5,6 +5,8 @@ import {
     openSettings,
     updateLanguageSetting,
 } from "./store/settings";
+import { AllScoreKeys, Player, PlayerScores, ScoreKey } from "./models";
+import { useState } from "react";
 
 function LanguageSettings() {
     const dispatch = useAppDispatch();
@@ -32,12 +34,103 @@ function LanguageSettings() {
     );
 }
 
+function collectStats(playerScores: PlayerScores[], property: ScoreKey) {
+    let set = 0;
+    let notSet = 0;
+    let strikes = 0;
+    let totalScore = 0;
+
+    for (const playerScore of playerScores) {
+        if (typeof playerScore[property] === "number") {
+            set++;
+            totalScore += playerScore[property] as number;
+        }
+        if (playerScore[property] === "not-set") {
+            notSet++;
+        }
+        if (playerScore[property] === "strike") {
+            strikes++;
+        }
+    }
+
+    return {
+        set,
+        notSet,
+        strikes,
+        totalScore,
+    };
+}
+
+function PlayerScoreSummary(props: {
+    playerName: string;
+    playerScores: PlayerScores[];
+}) {
+    return (
+        <>
+            <div />
+            <div>Filled</div>
+            <div>Not Filled</div>
+            <div>Strikes</div>
+            <div>Total Score</div>
+            <div>Average Score</div>
+            {AllScoreKeys.map((sk) => {
+                const stats = collectStats(props.playerScores, sk);
+                return (
+                    <>
+                        <div>{t(sk)}</div>
+                        <div>{stats.set}</div>
+                        <div>{stats.notSet}</div>
+                        <div>{stats.strikes}</div>
+                        <div>{stats.totalScore}</div>
+                        <div>
+                            {stats.set !== 0
+                                ? stats.totalScore / stats.set
+                                : "-"}
+                        </div>
+                    </>
+                );
+            })}
+        </>
+    );
+}
+
 function Statistics() {
     const games = useAppSelector((state) => state.statistics.games);
+    const playerStates = games.flatMap((g) => g.playerStates);
+    const playerNamesToStatesMap = new Map<string, Player[]>();
+    for (const playerState of playerStates) {
+        if (!playerNamesToStatesMap.has(playerState.name)) {
+            playerNamesToStatesMap.set(playerState.name, []);
+        }
+        playerNamesToStatesMap.get(playerState.name)?.push(playerState);
+    }
+    const playerNames = Array.from(playerNamesToStatesMap.keys());
+    const [selectedNameIndex, setSelectedNameIndex] = useState(0);
+    const selectedPlayerName = playerNames[selectedNameIndex];
+    const selectedPlayer = playerNamesToStatesMap.get(selectedPlayerName)!;
+
     return (
-        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-2">
-            <div>Number of Games</div>
-            <div>{games.length}</div>
+        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-[5fr_1fr_1fr_1fr_1fr_1fr] gap-5">
+            <div>{t("settings_statistics_GamesCompleted")}</div>
+            <div className="col-span-5">
+                {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
+            </div>
+            <select
+                className="col-span-6"
+                value={selectedNameIndex}
+                onChange={(event) => {
+                    event.preventDefault();
+                    setSelectedNameIndex(parseInt(event.target.value));
+                }}
+            >
+                {playerNames.map((name, index) => (
+                    <option value={index}>{name}</option>
+                ))}
+            </select>
+            <PlayerScoreSummary
+                playerName={selectedPlayerName}
+                playerScores={selectedPlayer}
+            />
         </div>
     );
 }

@@ -5,10 +5,13 @@ import { useAppSelector } from "./store/store";
 import { SettingsButton, SettingsView } from "./SettingsView";
 
 function App() {
-    const state = useAppSelector(state => state.game.currentState);
+    const state = useAppSelector((state) => state.game.currentState);
     const isSettingsOpen = useAppSelector(
         (state) => state.settings.isSettingsOpen
     );
+
+    // NOTE: referencing the language here, so that the whole App re-renders, when the language changes
+    useAppSelector((state) => state.settings.language);
 
     let view = null;
     switch (state) {

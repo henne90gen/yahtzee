@@ -1,4 +1,5 @@
-import { EndTurnOption } from "./models";
+import { ScoreKey } from "./models";
+import { useAppSelector } from "./store/store";
 
 export const ALL_LANGUAGES = ["en", "de"] as const;
 type LanguageTuple = typeof ALL_LANGUAGES;
@@ -24,14 +25,16 @@ type FinishedTranslationKey =
     | "finished_Wins"
     | "finished_Points";
 type ScoreBoardTranslationKey =
-    | EndTurnOption
+    | ScoreKey
     | "scoreBoard_UpperScore"
     | "scoreBoard_UpperBonus"
     | "scoreBoard_TotalUpperScore"
     | "scoreBoard_TotalLowerSection"
     | "scoreBoard_TotalUpperSection"
     | "scoreBoard_GrandTotal";
-type SettingsTranslationKey = "settings_Language";
+type SettingsTranslationKey =
+    | "settings_Language"
+    | "settings_statistics_GamesCompleted";
 
 export type TranslationKey =
     | ReadyTranslationKey
@@ -74,6 +77,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalUpperSection: "Total Upper Section",
         scoreBoard_GrandTotal: "Grand Total",
         settings_Language: "Language",
+        settings_statistics_GamesCompleted: "Games Completed",
     },
     de: {
         ready_StartGame: "Spiel starten",
@@ -108,6 +112,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalUpperSection: "Summe Unten",
         scoreBoard_GrandTotal: "Endsumme",
         settings_Language: "Sprache",
+        settings_statistics_GamesCompleted: "Abgeschlossene Spiele",
     },
 };
 

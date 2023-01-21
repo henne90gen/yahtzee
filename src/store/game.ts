@@ -1,11 +1,11 @@
 import {
-    AllEndTurnOptions,
+    AllScoreKeys,
     Die,
-    EndTurnOption,
+    ScoreKey,
     GameState,
     Player,
     PlayerName,
-    PlayerState,
+    PlayerScores,
 } from "../models";
 import {
     getAvailableOptions,
@@ -74,7 +74,7 @@ interface GameReducers {
     endGame: CaseReducer<GameData>;
     endTurn: CaseReducer<
         GameData,
-        PayloadAction<{ option: EndTurnOption; strike: boolean }>
+        PayloadAction<{ option: ScoreKey; strike: boolean }>
     >;
     doDiceRoll: CaseReducer<GameData>;
     onDieLockChange: CaseReducer<GameData, PayloadAction<number>>;
@@ -90,7 +90,7 @@ async function timeout(t: number, func: () => void): Promise<void> {
 }
 
 export function endTurnThunk(payload: {
-    option: EndTurnOption;
+    option: ScoreKey;
     strike: boolean;
 }) {
     return (dispatch: AppDispatch, getState: () => RootState) => {
@@ -141,7 +141,7 @@ function doAiTurnThunk() {
                     );
                     hasEndedTurn = true;
                 } else {
-                    const strikeOptions = AllEndTurnOptions.filter((option) =>
+                    const strikeOptions = AllScoreKeys.filter((option) =>
                         playerCanStrike(currentPlayer, option)
                     );
                     dispatch(
@@ -162,7 +162,7 @@ function doAiTurnThunk() {
 
 function endTurnFunc(
     state: GameData,
-    payload: { option: EndTurnOption; strike: boolean }
+    payload: { option: ScoreKey; strike: boolean }
 ) {
     const { option, strike } = payload;
 
@@ -263,7 +263,7 @@ const gameSlice = createSlice<GameData, GameReducers, "game">({
         },
         endTurn: (
             state: GameData,
-            action: PayloadAction<{ option: EndTurnOption; strike: boolean }>
+            action: PayloadAction<{ option: ScoreKey; strike: boolean }>
         ) => {
             endTurnFunc(state, action.payload);
         },

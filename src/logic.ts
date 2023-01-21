@@ -1,7 +1,7 @@
-import { Die, EndTurnOption, Player, PlayerName, PlayerState, ScoreValue } from "./models";
+import { Die, ScoreKey, Player, PlayerName, PlayerScores, ScoreValue } from "./models";
 import "./random";
 
-export function isUpperBonusAchievable(player: PlayerState): boolean {
+export function isUpperBonusAchievable(player: PlayerScores): boolean {
     if (hasPlayerUpperBonus(player)) {
         return true;
     }
@@ -16,7 +16,7 @@ export function isUpperBonusAchievable(player: PlayerState): boolean {
     return possibleResult >= 63;
 }
 
-export function hasPlayerUpperBonus(player: PlayerState): boolean {
+export function hasPlayerUpperBonus(player: PlayerScores): boolean {
     return upperScore(player) >= 63;
 }
 
@@ -37,7 +37,7 @@ function valueOrZero(value: ScoreValue): number {
     return valueOrDefault(value, 0);
 }
 
-export function upperScore(player: PlayerState): number {
+export function upperScore(player: PlayerScores): number {
     let result = 0;
     result += valueOrZero(player.ones);
     result += valueOrZero(player.twos);
@@ -48,7 +48,7 @@ export function upperScore(player: PlayerState): number {
     return result;
 }
 
-export function totalUpperScore(player: PlayerState): number {
+export function totalUpperScore(player: PlayerScores): number {
     let result = upperScore(player);
     if (hasPlayerUpperBonus(player)) {
         result += 35;
@@ -56,7 +56,7 @@ export function totalUpperScore(player: PlayerState): number {
     return result;
 }
 
-export function totalLowerScore(player: PlayerState): number {
+export function totalLowerScore(player: PlayerScores): number {
     let result = 0;
     result += valueOrZero(player.threeOfAKind);
     result += valueOrZero(player.fourOfAKind);
@@ -68,7 +68,7 @@ export function totalLowerScore(player: PlayerState): number {
     return result;
 }
 
-export function totalScore(player: PlayerState): number {
+export function totalScore(player: PlayerScores): number {
     return totalLowerScore(player) + totalUpperScore(player);
 }
 
@@ -153,10 +153,10 @@ export function toggleLock(rollCount: number, dice: Die[], index: number) {
 }
 
 export function getAvailableOptions(
-    player: PlayerState,
+    player: PlayerScores,
     dice: Die[]
-): EndTurnOption[] {
-    const options: EndTurnOption[] = [];
+): ScoreKey[] {
+    const options: ScoreKey[] = [];
     if (dice.filter((d) => d.value === 1).length > 0 && player.ones === "not-set") {
         options.push("ones");
     }
@@ -246,10 +246,10 @@ function sum(prev: number, cur: number) {
 }
 
 export function updateScore(
-    player: PlayerState,
-    option: EndTurnOption,
+    player: PlayerScores,
+    option: ScoreKey,
     dice: Die[]
-): PlayerState {
+): PlayerScores {
     const values = dice.map((d) => d.value);
     if (option === "ones") {
         player.ones = values.filter((v) => v === 1).reduce(sum, 0);
@@ -294,8 +294,8 @@ export function updateScore(
 }
 
 export function playerCanStrike(
-    player: PlayerState,
-    option: EndTurnOption
+    player: PlayerScores,
+    option: ScoreKey
 ): boolean {
     switch (option) {
         case "ones":
@@ -327,7 +327,7 @@ export function playerCanStrike(
     }
 }
 
-export function updateScoreStrike(player: PlayerState, option: EndTurnOption) {
+export function updateScoreStrike(player: PlayerScores, option: ScoreKey) {
     switch (option) {
         case "ones":
             player.ones = "strike";
