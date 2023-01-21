@@ -61,18 +61,24 @@ function collectStats(playerScores: PlayerScores[], property: ScoreKey) {
     };
 }
 
-function PlayerScoreSummary(props: {
-    playerName: string;
-    playerScores: PlayerScores[];
-}) {
+function PlayerScoreSummary(props: { playerScores: PlayerScores[] }) {
+    const classes = "text-ellipsis whitespace-nowrap overflow-hidden";
     return (
         <>
             <div />
-            <div>Filled</div>
-            <div>Not Filled</div>
-            <div>Strikes</div>
-            <div>Total Score</div>
-            <div>Average Score</div>
+            <div className={classes}>
+                {t("settings_statistics_FilledCount")}
+            </div>
+            <div className={classes}>
+                {t("settings_statistics_NotFilledCount")}
+            </div>
+            <div className={classes}>
+                {t("settings_statistics_StrikesCount")}
+            </div>
+            <div className={classes}>{t("settings_statistics_TotalScore")}</div>
+            <div className={classes}>
+                {t("settings_statistics_AverageScore")}
+            </div>
             {AllScoreKeys.map((sk) => {
                 const stats = collectStats(props.playerScores, sk);
                 return (
@@ -94,10 +100,8 @@ function PlayerScoreSummary(props: {
     );
 }
 
-function Statistics() {
-    const games = useAppSelector((state) => state.statistics.games);
-    const playerStates = games.flatMap((g) => g.playerStates);
-    const playerNamesToStatesMap = new Map<string, Player[]>();
+function getSelectedPlayer(playerStates: Player[], selectedNameIndex: number) {
+    const playerNamesToStatesMap = new Map<string, PlayerScores[]>();
     for (const playerState of playerStates) {
         if (!playerNamesToStatesMap.has(playerState.name)) {
             playerNamesToStatesMap.set(playerState.name, []);
@@ -105,14 +109,33 @@ function Statistics() {
         playerNamesToStatesMap.get(playerState.name)?.push(playerState);
     }
     const playerNames = Array.from(playerNamesToStatesMap.keys());
-    const [selectedNameIndex, setSelectedNameIndex] = useState(0);
-    const selectedPlayerName = playerNames[selectedNameIndex];
+
+    if (selectedNameIndex === 0) {
+        return {
+            playerNames,
+            selectedPlayer: playerStates,
+        };
+    }
+
+    const selectedPlayerName = playerNames[selectedNameIndex - 1];
     const selectedPlayer = playerNamesToStatesMap.get(selectedPlayerName)!;
+    return { playerNames, selectedPlayer };
+}
+
+function Statistics() {
+    const games = useAppSelector((state) => state.statistics.games);
+    const playerStates = games.flatMap((g) => g.playerStates);
+    const [selectedNameIndex, setSelectedNameIndex] = useState(0);
+
+    const { playerNames, selectedPlayer } = getSelectedPlayer(
+        playerStates,
+        selectedNameIndex
+    );
 
     return (
-        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-[5fr_1fr_1fr_1fr_1fr_1fr] gap-5">
-            <div>{t("settings_statistics_GamesCompleted")}</div>
-            <div className="col-span-5">
+        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-5">
+            <div className="col-span-4">{t("settings_statistics_GamesCompleted")}</div>
+            <div className="col-span-2">
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
             </div>
             <select
@@ -123,14 +146,14 @@ function Statistics() {
                     setSelectedNameIndex(parseInt(event.target.value));
                 }}
             >
+                <option value={0}>
+                    {t("settings_statistics_TotalScores")}
+                </option>
                 {playerNames.map((name, index) => (
-                    <option value={index}>{name}</option>
+                    <option value={index + 1}>{name}</option>
                 ))}
             </select>
-            <PlayerScoreSummary
-                playerName={selectedPlayerName}
-                playerScores={selectedPlayer}
-            />
+            <PlayerScoreSummary playerScores={selectedPlayer} />
         </div>
     );
 }

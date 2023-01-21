@@ -34,7 +34,13 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_GrandTotal";
 type SettingsTranslationKey =
     | "settings_Language"
-    | "settings_statistics_GamesCompleted";
+    | "settings_statistics_GamesCompleted"
+    | "settings_statistics_TotalScores"
+    | "settings_statistics_FilledCount"
+    | "settings_statistics_NotFilledCount"
+    | "settings_statistics_StrikesCount"
+    | "settings_statistics_TotalScore"
+    | "settings_statistics_AverageScore";
 
 export type TranslationKey =
     | ReadyTranslationKey
@@ -78,6 +84,12 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_GrandTotal: "Grand Total",
         settings_Language: "Language",
         settings_statistics_GamesCompleted: "Games Completed",
+        settings_statistics_TotalScores: "Total Scores",
+        settings_statistics_FilledCount: "Filled",
+        settings_statistics_NotFilledCount: "Not Filled",
+        settings_statistics_StrikesCount: "Strikes",
+        settings_statistics_TotalScore: "Total Score",
+        settings_statistics_AverageScore: "Average Score",
     },
     de: {
         ready_StartGame: "Spiel starten",
@@ -113,6 +125,12 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_GrandTotal: "Endsumme",
         settings_Language: "Sprache",
         settings_statistics_GamesCompleted: "Abgeschlossene Spiele",
+        settings_statistics_TotalScores: "Gesamtpunktzahl",
+        settings_statistics_FilledCount: "Ausgefüllt",
+        settings_statistics_NotFilledCount: "Nicht Ausgefüllt",
+        settings_statistics_StrikesCount: "Gestrichen",
+        settings_statistics_TotalScore: "Gesamtpunktzahl",
+        settings_statistics_AverageScore: "Durchschnittspunktzahl",
     },
 };
 
