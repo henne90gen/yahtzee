@@ -8,19 +8,19 @@ function d(v: number): Die {
 
 function p(v: any) {
     return Object.assign({
-        ones: null,
-        twos: null,
-        threes: null,
-        fours: null,
-        fives: null,
-        sixes: null,
-        threeOfAKind: null,
-        fourOfAKind: null,
-        smallStraight: null,
-        largeStraight: null,
-        fullHouse: null,
-        chance: null,
-        yahtzee: null,
+        ones: "not-set",
+        twos: "not-set",
+        threes: "not-set",
+        fours: "not-set",
+        fives: "not-set",
+        sixes: "not-set",
+        threeOfAKind: "not-set",
+        fourOfAKind: "not-set",
+        smallStraight: "not-set",
+        largeStraight: "not-set",
+        fullHouse: "not-set",
+        chance: "not-set",
+        yahtzee: "not-set",
     }, v);
 }
 
