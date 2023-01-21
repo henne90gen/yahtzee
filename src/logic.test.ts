@@ -1,6 +1,6 @@
 import { it, describe, expect } from 'vitest';
 import {getAvailableOptions, removeIndexAndUpdateLaterIndices, updateScore} from "./logic";
-import {Die} from "./models";
+import {Die, EndTurnOption} from "./models";
 
 function d(v: number): Die {
     return {value: v, locked: "unlocked"};
@@ -25,116 +25,60 @@ function p(v: any) {
 }
 
 describe('getAvailableOptions', () => {
-    it("does not suggest option that is set already", () => {
-        let result = getAvailableOptions(p({ones: 1}), [d(1), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["twos", "threeOfAKind", "fourOfAKind", "chance"]);
+    it.each([
+        [p({ones: 1}), [d(1), d(2), d(2), d(2), d(2)], ["twos", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({twos: 1}), [d(1), d(2), d(2), d(2), d(2)], ["ones", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({threes: 1}), [d(3), d(2), d(2), d(2), d(2)], ["twos", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({fours: 1}), [d(4), d(2), d(2), d(2), d(2)], ["twos", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({fives: 1}), [d(5), d(2), d(2), d(2), d(2)], ["twos", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({sixes: 1}), [d(6), d(2), d(2), d(2), d(2)], ["twos", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({threeOfAKind: 1}), [d(1), d(2), d(2), d(2), d(2)], ["ones", "twos", "fourOfAKind", "chance"]],
+        [p({fourOfAKind: 1}), [d(1), d(2), d(2), d(2), d(2)], ["ones", "twos", "threeOfAKind", "chance"]],
+        [p({fullHouse: 1}), [d(1), d(1), d(2), d(2), d(2)], ["ones", "twos", "threeOfAKind", "chance"]],
+        [p({smallStraight: 1}), [d(1), d(2), d(3), d(4), d(2)], ["ones", "twos", "threes", "fours", "chance"]],
+        [p({largeStraight: 1}), [d(1), d(2), d(3), d(4), d(5)], ["ones", "twos", "threes", "fours", "fives", "smallStraight", "chance"]],
+        [p({yahtzee: 1}), [d(1), d(1), d(1), d(1), d(1)], ["ones", "threeOfAKind", "fourOfAKind", "chance"]],
+        [p({chance: 1}), [d(1), d(1), d(1), d(1), d(1)], ["ones", "threeOfAKind", "fourOfAKind", "yahtzee"]],
+    ])("does not suggest option that is set already", (player, dice, expected) => {
+        const result = getAvailableOptions(player, dice);
+        expect(result).toEqual(expected);
+    })
 
-        result = getAvailableOptions(p({twos: 1}), [d(1), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["ones", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({threes: 1}), [d(3), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["twos", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({fours: 1}), [d(4), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["twos", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({fives: 1}), [d(5), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["twos", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({sixes: 1}), [d(6), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["twos", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({threeOfAKind: 1}), [d(1), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["ones", "twos", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({fourOfAKind: 1}), [d(1), d(2), d(2), d(2), d(2)]);
-        expect(result).toEqual(["ones", "twos", "threeOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({fullHouse: 1}), [d(1), d(1), d(2), d(2), d(2)]);
-        expect(result).toEqual(["ones", "twos", "threeOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({smallStraight: 1}), [d(1), d(2), d(3), d(4), d(2)]);
-        expect(result).toEqual(["ones", "twos", "threes", "fours", "chance"]);
-
-        result = getAvailableOptions(p({largeStraight: 1}), [d(1), d(2), d(3), d(4), d(5)]);
-        expect(result).toEqual(["ones", "twos", "threes", "fours", "fives", "smallStraight", "chance"]);
-
-        result = getAvailableOptions(p({yahtzee: 1}), [d(1), d(1), d(1), d(1), d(1)]);
-        expect(result).toEqual(["ones", "threeOfAKind", "fourOfAKind", "chance"]);
-
-        result = getAvailableOptions(p({chance: 1}), [d(1), d(1), d(1), d(1), d(1)]);
-        expect(result).toEqual(["ones", "threeOfAKind", "fourOfAKind", "yahtzee"]);
+    it.each([
+        [p({}), [d(1), d(1), d(2), d(2), d(2)], ["ones", "twos", "threeOfAKind", "fullHouse", "chance"]],
+    ])("correctly detects full house", (player, dice, expected) => {
+        const result = getAvailableOptions(player, dice);
+        expect(result).toEqual(expected);
     });
 
-    it("correctly detects full house", () => {
-        let result = getAvailableOptions(p({}), [d(1), d(1), d(2), d(2), d(2)]);
-        expect(result).toEqual(["ones", "twos", "threeOfAKind", "fullHouse", "chance"]);
-    });
-
-    it("correctly detects straights", () => {
-        let result = getAvailableOptions(p({}), [d(1), d(2), d(3), d(4), d(5)]);
-        expect(result).toEqual(["ones", "twos", "threes", "fours", "fives", "smallStraight", "largeStraight", "chance"]);
-
-        result = getAvailableOptions(p({}), [d(2), d(3), d(4), d(5), d(6)]);
-        expect(result).toEqual(["twos", "threes", "fours", "fives", "sixes", "smallStraight", "largeStraight", "chance"]);
-
-        result = getAvailableOptions(p({}), [d(3), d(4), d(5), d(2), d(3)]);
-        expect(result).toEqual(["twos", "threes", "fours", "fives", "smallStraight", "chance"]);
+    it.each([
+        [p({}), [d(1), d(2), d(3), d(4), d(5)], ["ones", "twos", "threes", "fours", "fives", "smallStraight", "largeStraight", "chance"]],
+        [p({}), [d(2), d(3), d(4), d(5), d(6)], ["twos", "threes", "fours", "fives", "sixes", "smallStraight", "largeStraight", "chance"]],
+        [p({}), [d(3), d(4), d(5), d(2), d(3)], ["twos", "threes", "fours", "fives", "smallStraight", "chance"]],
+    ])("correctly detects straights", (player, dice, expected) => {
+        const result = getAvailableOptions(player, dice);
+        expect(result).toEqual(expected);
     });
 });
 
 describe("updateScore", () => {
-    it("updates numbers correctly: ones", () => {
-        const player = updateScore(p({}), "ones", [d(1), d(1), d(2), d(5), d(4)])
-        expect(player.ones).toEqual(2);
-    });
-    it("updates numbers correctly: twos", () => {
-        const player = updateScore(p({}), "twos", [d(1), d(2), d(2), d(5), d(4)])
-        expect(player.twos).toEqual(4);
-    });
-    it("updates numbers correctly: threes", () => {
-        const player = updateScore(p({}), "threes", [d(1), d(3), d(3), d(5), d(4)])
-        expect(player.threes).toEqual(6);
-    });
-    it("updates numbers correctly: fours", () => {
-        const player = updateScore(p({}), "fours", [d(1), d(2), d(4), d(5), d(4)])
-        expect(player.fours).toEqual(8);
-    });
-    it("updates numbers correctly: fives", () => {
-        const player = updateScore(p({}), "fives", [d(1), d(2), d(5), d(5), d(4)])
-        expect(player.fives).toEqual(10);
-    });
-    it("updates numbers correctly: sixes", () => {
-        const player = updateScore(p({}), "sixes", [d(1), d(6), d(6), d(5), d(4)])
-        expect(player.sixes).toEqual(12);
-    });
-    it("updates three of a kind correctly", () => {
-        const player = updateScore(p({}), "threeOfAKind", [d(1), d(6), d(6), d(6), d(4)])
-        expect(player.threeOfAKind).toEqual(23);
-    });
-    it("updates four of a kind correctly", () => {
-        const player = updateScore(p({}), "fourOfAKind", [d(1), d(6), d(6), d(6), d(6)])
-        expect(player.fourOfAKind).toEqual(25);
-    });
-    it("updates full house correctly", () => {
-        const player = updateScore(p({}), "fullHouse", [d(2), d(2), d(3), d(3), d(3)])
-        expect(player.fullHouse).toEqual(25);
-    });
-    it("updates small straight correctly", () => {
-        const player = updateScore(p({}), "smallStraight", [d(1), d(2), d(3), d(4), d(6)])
-        expect(player.smallStraight).toEqual(30);
-    });
-    it("updates large straight correctly", () => {
-        const player = updateScore(p({}), "largeStraight", [d(1), d(2), d(3), d(4), d(5)])
-        expect(player.largeStraight).toEqual(40);
-    });
-    it("updates yahtzee correctly", () => {
-        const player = updateScore(p({}), "yahtzee", [d(1), d(1), d(1), d(1), d(1)])
-        expect(player.yahtzee).toEqual(50);
-    });
-    it("updates chance correctly", () => {
-        const player = updateScore(p({}), "chance", [d(1), d(2), d(3), d(4), d(6)])
-        expect(player.chance).toEqual(16);
+    it.each([
+        ["ones" as EndTurnOption, [d(1), d(1), d(2), d(5), d(4)], 2],
+        ["twos" as EndTurnOption, [d(1), d(2), d(2), d(5), d(4)], 4],
+        ["threes" as EndTurnOption, [d(1), d(3), d(3), d(5), d(4)], 6],
+        ["fours" as EndTurnOption, [d(1), d(2), d(4), d(5), d(4)], 8],
+        ["fives" as EndTurnOption, [d(1), d(2), d(5), d(5), d(4)], 10],
+        ["sixes" as EndTurnOption, [d(1), d(6), d(6), d(5), d(4)], 12],
+        ["threeOfAKind" as EndTurnOption, [d(1), d(6), d(6), d(6), d(4)], 23],
+        ["fourOfAKind" as EndTurnOption, [d(1), d(6), d(6), d(6), d(6)], 25],
+        ["fullHouse" as EndTurnOption, [d(2), d(2), d(3), d(3), d(3)], 25],
+        ["smallStraight" as EndTurnOption, [d(1), d(2), d(3), d(4), d(6)], 30],
+        ["largeStraight" as EndTurnOption, [d(1), d(2), d(3), d(4), d(5)], 40],
+        ["yahtzee" as EndTurnOption, [d(1), d(1), d(1), d(1), d(1)], 50],
+        ["chance" as EndTurnOption, [d(1), d(2), d(3), d(4), d(6)], 16],
+    ])("updates numbers correctly: %s", (nameOfNumber: EndTurnOption, dice: Die[], expected: number) => {
+        const player = updateScore(p({}), nameOfNumber, dice)
+        expect(player[nameOfNumber]).toEqual(expected);
     });
 });
 
