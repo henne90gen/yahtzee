@@ -5,6 +5,7 @@ import {
     GameState,
     Player,
     PlayerName,
+    PlayerState,
 } from "../models";
 import {
     getAvailableOptions,
@@ -19,10 +20,10 @@ import {
     updateScore,
     updateScoreStrike,
 } from "../logic";
-import { CaseReducer } from "@reduxjs/toolkit/src/createReducer";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, CaseReducer } from "@reduxjs/toolkit";
 import { random, randomState } from "../random";
 import { AppDispatch, RootState } from "./store";
+import { saveGameStatistics } from "./statistics";
 
 export interface GameData {
     currentState: GameState;
@@ -92,8 +93,19 @@ export function endTurnThunk(payload: {
     option: EndTurnOption;
     strike: boolean;
 }) {
-    return (dispatch: AppDispatch) => {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
         dispatch(gameSlice.actions.endTurn(payload));
+
+        const state = getState();
+        if (state.game.currentState === "finished") {
+            dispatch(
+                saveGameStatistics({
+                    hasBeenCompleted: true,
+                    playerStates: state.game.players,
+                })
+            );
+        }
+
         dispatch(doAiTurnThunk());
     };
 }
@@ -186,6 +198,20 @@ export function startGameThunk() {
     };
 }
 
+export function endGameThunk() {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
+        dispatch(gameSlice.actions.endGame());
+
+        const state = getState();
+        dispatch(
+            saveGameStatistics({
+                hasBeenCompleted: false,
+                playerStates: state.game.players,
+            })
+        );
+    };
+}
+
 const gameSlice = createSlice<GameData, GameReducers, "game">({
     name: "game",
     initialState: initialState(),
@@ -271,9 +297,9 @@ export const {
     updatePlayerName,
     addInvalidPlayerName,
     removeInvalidPlayerName,
-    startGame,
+    // startGame,
     newGame,
-    endGame,
+    // endGame,
     endTurn,
     doDiceRoll,
     onDieLockChange,

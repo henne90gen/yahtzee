@@ -1,28 +1,44 @@
 import { CaseReducer, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Player } from "../models";
 
-export interface StatisticsData {}
+export type GameStatistics = {
+    playerStates: Player[];
+    hasBeenCompleted: boolean;
+};
 
-export function initialSettings(): StatisticsData {
-    return { isSettingsOpen: false, language: "en" };
+export interface StatisticsData {
+    games: GameStatistics[];
+}
+
+export function initialStatistics(): StatisticsData {
+    return { games: [] };
 }
 
 interface StatisticsReducers {
     [K: string]: CaseReducer<StatisticsData, any>;
 
-    updateStatisticsAfterGame: CaseReducer<StatisticsData, PayloadAction<any>>;
+    saveGameStatistics: CaseReducer<
+        StatisticsData,
+        PayloadAction<GameStatistics>
+    >;
 }
 
 const statisticsSlice = createSlice<
     StatisticsData,
     StatisticsReducers,
-    "settings"
+    "statistics"
 >({
-    name: "settings",
-    initialState: initialSettings(),
+    name: "statistics",
+    initialState: initialStatistics(),
     reducers: {
-        updateStatisticsAfterGame: (state) => {},
+        saveGameStatistics: (
+            state: StatisticsData,
+            action: PayloadAction<GameStatistics>
+        ) => {
+            state.games.push(action.payload);
+        },
     },
 });
 
 export const statisticsReducer = statisticsSlice.reducer;
-export const {} = statisticsSlice.actions;
+export const { saveGameStatistics } = statisticsSlice.actions;

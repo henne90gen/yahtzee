@@ -1,7 +1,7 @@
 import { Die } from "../models";
 import React, { ReactElement } from "react";
 import ScoreBoard from "../ScoreBoard";
-import { doDiceRoll, endGame, onDieLockChange } from "../store/game";
+import { doDiceRoll, endGameThunk, onDieLockChange } from "../store/game";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import t from "../translations";
 import { selectCurrentPlayer } from "../store/selectors";
@@ -165,7 +165,7 @@ function EndGameCard() {
         <div className="grid justify-items-center justify-center bg-white w-full sm:w-3/4 mt-3 p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
             <button
                 className="bg-red-300 rounded text-gray-700 px-3 py-2 my-3"
-                onClick={() => dispatch(endGame())}
+                onClick={() => dispatch(endGameThunk())}
             >
                 {t("playing_EndGame")}
             </button>
@@ -174,7 +174,6 @@ function EndGameCard() {
 }
 
 export default function PlayingState() {
-    const dispatch = useAppDispatch();
     return (
         <div className="flex flex-col items-center p-2 sm:p-0 sm:py-5 md:py-10">
             <PlayArea />
