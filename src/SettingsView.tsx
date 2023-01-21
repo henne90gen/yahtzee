@@ -6,30 +6,47 @@ import {
     updateLanguageSetting,
 } from "./store/settings";
 
-export function SettingsView() {
+function LanguageSettings() {
     const dispatch = useAppDispatch();
     const language = useAppSelector((state) => state.settings.language);
     return (
-        <div className="pt-10 sm:pt-14 md:pt-20 flex justify-center">
-            <div className="grid gap-20 grid-cols-2 justify-center lg:w-1/2 xl:w-1/3 rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white">
-                <div>{t("settings_Language")}</div>
-                <div className="grid justify-center">
-                    <select
-                        value={language}
-                        className="p-2 rounded bg-blue-500 text-white"
-                        onChange={(event) =>
-                            dispatch(
-                                updateLanguageSetting(
-                                    event.currentTarget.value as Language
-                                )
+        <div className="grid gap-20 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white">
+            <div>{t("settings_Language")}</div>
+            <div className="grid justify-center">
+                <select
+                    value={language}
+                    className="p-2 rounded bg-blue-500 text-white"
+                    onChange={(event) =>
+                        dispatch(
+                            updateLanguageSetting(
+                                event.currentTarget.value as Language
                             )
-                        }
-                    >
-                        <option value="de">DE</option>
-                        <option value="en">EN</option>
-                    </select>
-                </div>
+                        )
+                    }
+                >
+                    <option value="de">DE</option>
+                    <option value="en">EN</option>
+                </select>
             </div>
+        </div>
+    );
+}
+
+function Statistics() {
+    const games = useAppSelector((state) => state.statistics.games);
+    return (
+        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-2">
+            <div>Number of Games</div>
+            <div>{games.length}</div>
+        </div>
+    );
+}
+
+export function SettingsView() {
+    return (
+        <div className="pt-10 sm:pt-14 md:pt-20 grid gap-10 justify-center grid-cols-[75%] md:grid-cols-[40rem]">
+            <LanguageSettings />
+            <Statistics />
         </div>
     );
 }
