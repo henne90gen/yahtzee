@@ -1,4 +1,4 @@
-import { ScoreKey, Player, ScoreValue } from "./models";
+import { ScoreKey, Player, ScoreValue } from "../logic/models";
 import {
     getAvailableOptions,
     hasPlayerUpperBonus,
@@ -7,11 +7,11 @@ import {
     totalScore,
     totalUpperScore,
     upperScore,
-} from "./logic";
-import t from "./translations";
-import { useAppDispatch, useAppSelector } from "./store/store";
-import { endTurnThunk } from "./store/game";
-import { selectCurrentPlayer, selectWinner } from "./store/selectors";
+} from "../logic/logic";
+import t from "../translations";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { endTurnThunk } from "../store/game";
+import { selectCurrentPlayer, selectWinner } from "../store/selectors";
 
 const UpperSectionScoreKeys: ScoreKey[] = [
     "ones",

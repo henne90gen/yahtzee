@@ -2,7 +2,7 @@ import ReadyState from "./game_states/ReadyState";
 import PlayingState from "./game_states/PlayingState";
 import FinishedState from "./game_states/FinishedState";
 import { useAppSelector } from "./store/store";
-import { SettingsButton, SettingsView } from "./SettingsView";
+import { SettingsButton, SettingsView } from "./components/SettingsView";
 
 function App() {
     const state = useAppSelector((state) => state.game.currentState);

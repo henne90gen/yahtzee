@@ -1,5 +1,5 @@
-import { totalScore } from "../logic";
-import ScoreBoard from "../ScoreBoard";
+import { totalScore } from "../logic/logic";
+import ScoreBoard from "../components/ScoreBoard";
 import { newGame } from "../store/game";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { selectWinner } from "../store/selectors";

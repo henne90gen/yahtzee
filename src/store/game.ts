@@ -6,7 +6,7 @@ import {
     Player,
     PlayerName,
     PlayerScores,
-} from "../models";
+} from "../logic/models";
 import {
     getAvailableOptions,
     getLeadingPlayerIndex,
@@ -19,9 +19,9 @@ import {
     toggleLock,
     updateScore,
     updateScoreStrike,
-} from "../logic";
+} from "../logic/logic";
 import { createSlice, PayloadAction, CaseReducer } from "@reduxjs/toolkit";
-import { random, randomState } from "../random";
+import { random, randomState } from "../logic/random";
 import { AppDispatch, RootState } from "./store";
 import { saveGameStatistics } from "./statistics";
 

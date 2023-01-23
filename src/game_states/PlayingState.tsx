@@ -1,6 +1,6 @@
-import { Die } from "../models";
+import { Die } from "../logic/models";
 import React, { ReactElement } from "react";
-import ScoreBoard from "../ScoreBoard";
+import ScoreBoard from "../components/ScoreBoard";
 import { doDiceRoll, endGameThunk, onDieLockChange } from "../store/game";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import t from "../translations";

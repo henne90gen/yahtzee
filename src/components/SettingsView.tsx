@@ -1,11 +1,11 @@
-import { useAppDispatch, useAppSelector } from "./store/store";
-import t, { Language } from "./translations";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import t, { Language } from "../translations";
 import {
     closeSettings,
     openSettings,
     updateLanguageSetting,
-} from "./store/settings";
-import { AllScoreKeys, Player, PlayerScores, ScoreKey } from "./models";
+} from "../store/settings";
+import { AllScoreKeys, Player, PlayerScores, ScoreKey } from "../logic/models";
 import { useState } from "react";
 
 function LanguageSettings() {
