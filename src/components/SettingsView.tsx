@@ -12,7 +12,7 @@ function LanguageSettings() {
     const dispatch = useAppDispatch();
     const language = useAppSelector((state) => state.settings.language);
     return (
-        <div className="grid gap-20 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white">
+        <div className="grid gap-20 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white">
             <div>{t("settings_Language")}</div>
             <div className="grid justify-center">
                 <select
@@ -133,7 +133,7 @@ function Statistics() {
     );
 
     return (
-        <div className="rounded-lg shadow-lg bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-5">
+        <div className="p-1 sm:p-2 md:p-4 rounded-lg shadow-lg bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-2 sm:gap-4 md:gap-5">
             <div className="col-span-4">{t("settings_statistics_GamesCompleted")}</div>
             <div className="col-span-2">
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
