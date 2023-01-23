@@ -3,6 +3,18 @@ import { ReactElement } from "react";
 import { onDieLockChange } from "../store/game";
 import { useAppDispatch } from "../store/store";
 
+// Source: https://upload.wikimedia.org/wikipedia/commons/9/95/OOjs_UI_icon_lock.svg
+function Lock(props: { color: string }) {
+    return (
+        <g transform="translate(20, 20) scale(3, 3)">
+            <path
+                fill={props.color}
+                d="M16.07 8H15V5s0-5-5-5-5 5-5 5v3H3.93A1.93 1.93 0 0 0 2 9.93v8.15A1.93 1.93 0 0 0 3.93 20h12.14A1.93 1.93 0 0 0 18 18.07V9.93A1.93 1.93 0 0 0 16.07 8zM10 16a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm3-8H7V5.5C7 4 7 2 10 2s3 2 3 3.5z"
+            />
+        </g>
+    );
+}
+
 function topLeft(value: number) {
     return value === 2 || value === 4 || value === 5 || value === 6;
 }
@@ -40,34 +52,35 @@ function DieSvg(props: {
     const { value, locked } = die;
     const dots: ReactElement[] = [];
 
-    let color = "black";
+    let dieColor = "black";
+    if (disabled || locked === "permanently-locked" || locked === "locked") {
+        dieColor = "gray";
+    }
+    let lockColor = "black";
     if (disabled || locked === "permanently-locked") {
-        color = "gray";
-    } else if (locked === "locked") {
-        // TODO use a more beautiful shade of blue
-        color = "blue";
+        lockColor = "gray";
     }
 
     if (topLeft(value)) {
-        dots.push(<circle key={1} cx={25} cy={25} r={10} fill={color} />);
+        dots.push(<circle key={1} cx={25} cy={25} r={10} fill={dieColor} />);
     }
     if (topRight(value)) {
-        dots.push(<circle key={2} cx={75} cy={25} r={10} fill={color} />);
+        dots.push(<circle key={2} cx={75} cy={25} r={10} fill={dieColor} />);
     }
     if (middleLeft(value)) {
-        dots.push(<circle key={3} cx={25} cy={50} r={10} fill={color} />);
+        dots.push(<circle key={3} cx={25} cy={50} r={10} fill={dieColor} />);
     }
     if (middle(value)) {
-        dots.push(<circle key={4} cx={50} cy={50} r={10} fill={color} />);
+        dots.push(<circle key={4} cx={50} cy={50} r={10} fill={dieColor} />);
     }
     if (middleRight(value)) {
-        dots.push(<circle key={5} cx={75} cy={50} r={10} fill={color} />);
+        dots.push(<circle key={5} cx={75} cy={50} r={10} fill={dieColor} />);
     }
     if (bottomLeft(value)) {
-        dots.push(<circle key={6} cx={25} cy={75} r={10} fill={color} />);
+        dots.push(<circle key={6} cx={25} cy={75} r={10} fill={dieColor} />);
     }
     if (bottomRight(value)) {
-        dots.push(<circle key={7} cx={75} cy={75} r={10} fill={color} />);
+        dots.push(<circle key={7} cx={75} cy={75} r={10} fill={dieColor} />);
     }
 
     return (
@@ -82,9 +95,14 @@ function DieSvg(props: {
             <path
                 d="M 10 5 H 90 A 5 5 0 0 1 95 10 V 90 A 5 5 0 0 1 90 95 H 10 A 5 5 0 0 1 5 90 V 10 A 5 5 0 0 1 10 5"
                 fill="white"
-                stroke={color}
+                stroke={dieColor}
             />
-            {dots}
+            {!disabled ? dots : null}
+            {disabled ||
+            locked === "locked" ||
+            locked === "permanently-locked" ? (
+                <Lock color={lockColor} />
+            ) : null}
         </svg>
     );
 }
