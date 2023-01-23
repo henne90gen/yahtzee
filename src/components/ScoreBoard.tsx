@@ -161,7 +161,7 @@ export default function ScoreBoard(props: { winner?: Player }) {
     const players = useAppSelector((state) => state.game.players);
     return (
         <div
-            className="flex-1 grid grid-flow-col bg-white items-center w-full sm:w-7/8 sm:w-3/4 p-1 md:p-10 rounded md:rounded-lg shadow-lg"
+            className="grid grid-flow-col bg-white items-center p-1 md:p-10 rounded md:rounded-lg shadow-lg"
             style={{
                 gridTemplateRows: "4em repeat(19, minmax(0, 1fr))",
                 gridTemplateColumns: "10em",

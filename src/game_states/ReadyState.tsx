@@ -1,4 +1,4 @@
-import { PlayerName } from "../models";
+import { PlayerName } from "../logic/models";
 import {
     addInvalidPlayerName,
     addPlayerName,
@@ -17,7 +17,6 @@ function PlayerAvatar(props: {
     removePlayer: () => void;
 }) {
     const { player, invalid, updatePlayer, removePlayer } = props;
-    // TODO add avatar picture
     let bgColor = "bg-blue-200 ";
     if (invalid) {
         bgColor = "bg-red-200 ";
@@ -121,34 +120,32 @@ export default function ReadyState() {
         />
     ));
     return (
-        <div className="p-2 pt-10 sm:p-0 sm:pt-14 md:pt-20 flex justify-center">
+        <div
+            className="grid gap-3 justify-center rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
+            style={{ gridTemplateColumns: "1fr" }}
+        >
+            {renderedPlayers}
             <div
-                className="grid gap-3 justify-center lg:w-1/2 xl:w-1/3 rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
-                style={{ gridTemplateColumns: "1fr" }}
+                className="grid gap-4 pt-3"
+                style={{ gridTemplateColumns: "1fr 3fr" }}
             >
-                {renderedPlayers}
-                <div
-                    className="grid gap-4 pt-3"
-                    style={{ gridTemplateColumns: "1fr 3fr" }}
+                <button
+                    title={t("ready_AddPlayerTooltip")}
+                    className="py-2 px-5 bg-blue-400 rounded-lg text-white"
+                    onClick={() => {
+                        dispatch(addPlayerName({ name: "", isAI: false }));
+                    }}
                 >
-                    <button
-                        title={t("ready_AddPlayerTooltip")}
-                        className="py-2 px-5 bg-blue-400 rounded-lg text-white"
-                        onClick={() => {
-                            dispatch(addPlayerName({ name: "", isAI: false }));
-                        }}
-                    >
-                        +
-                    </button>
-                    <button
-                        className="py-2 px-3 bg-green-500 rounded-lg text-white"
-                        onClick={() => {
-                            startGameClicked();
-                        }}
-                    >
-                        {t("ready_StartGame")}
-                    </button>
-                </div>
+                    +
+                </button>
+                <button
+                    className="py-2 px-3 bg-green-500 rounded-lg text-white"
+                    onClick={() => {
+                        startGameClicked();
+                    }}
+                >
+                    {t("ready_StartGame")}
+                </button>
             </div>
         </div>
     );

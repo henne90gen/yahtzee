@@ -133,7 +133,7 @@ function Statistics() {
     );
 
     return (
-        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-20 bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-5">
+        <div className="rounded-lg shadow-lg bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-5">
             <div className="col-span-4">{t("settings_statistics_GamesCompleted")}</div>
             <div className="col-span-2">
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
@@ -160,10 +160,10 @@ function Statistics() {
 
 export function SettingsView() {
     return (
-        <div className="pt-10 sm:pt-14 md:pt-20 grid gap-10 justify-center grid-cols-[75%] md:grid-cols-[40rem]">
+        <>
             <LanguageSettings />
             <Statistics />
-        </div>
+        </>
     );
 }
 
