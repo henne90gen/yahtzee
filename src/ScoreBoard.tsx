@@ -110,13 +110,13 @@ function Scores(props: { player: Player }) {
                     disabled={disableEnterButton}
                     onClick={() => selectedOption(props.endTurnOption, false)}
                 >
-                    Enter
+                    {t("scoreBoard_Enter")}
                 </button>
                 <button
                     className={"bg-red-400 text-white rounded px-3 ml-2"}
                     onClick={() => selectedOption(props.endTurnOption, true)}
                 >
-                    Strike
+                    {t("scoreBoard_Strike")}
                 </button>
             </>
         );

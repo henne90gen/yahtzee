@@ -31,7 +31,9 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_TotalUpperScore"
     | "scoreBoard_TotalLowerSection"
     | "scoreBoard_TotalUpperSection"
-    | "scoreBoard_GrandTotal";
+    | "scoreBoard_GrandTotal"
+    | "scoreBoard_Enter"
+    | "scoreBoard_Strike";
 type SettingsTranslationKey =
     | "settings_Language"
     | "settings_statistics_GamesCompleted"
@@ -90,6 +92,8 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         settings_statistics_StrikesCount: "Strikes",
         settings_statistics_TotalScore: "Total Score",
         settings_statistics_AverageScore: "Average Score",
+        scoreBoard_Enter: "Enter",
+        scoreBoard_Strike: "Strike",
     },
     de: {
         ready_StartGame: "Spiel starten",
@@ -131,6 +135,8 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         settings_statistics_StrikesCount: "Gestrichen",
         settings_statistics_TotalScore: "Gesamtpunktzahl",
         settings_statistics_AverageScore: "Durchschnittspunktzahl",
+        scoreBoard_Enter: "Eintragen",
+        scoreBoard_Strike: "Streichen",
     },
 };
 
