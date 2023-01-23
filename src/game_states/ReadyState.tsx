@@ -61,16 +61,16 @@ function PlayerAvatar(props: {
                         updatePlayer({ ...player, isAI: value });
                     }}
                 />
-                <span className="ml-1">{t("ready_AI")}</span>
+                <span className="ml-1 w-5">{t("ready_AI")}</span>
             </div>
             <button
                 title={t("ready_RemovePlayerTooltip")}
-                className="p-2 rounded bg-red-300"
+                className="p-2 w-8 h-8 text-center rounded bg-red-300"
                 onClick={() => {
                     removePlayer();
                 }}
             >
-                -
+                <span className="relative bottom-1">-</span>
             </button>
             {getInvalidNameMessage()}
         </div>
@@ -78,7 +78,7 @@ function PlayerAvatar(props: {
 }
 
 export default function ReadyState() {
-    const state = useAppSelector(state => state.game.readyState);
+    const state = useAppSelector((state) => state.game.readyState);
     const dispatch = useAppDispatch();
 
     function startGameClicked() {
@@ -121,7 +121,7 @@ export default function ReadyState() {
         />
     ));
     return (
-        <div className="pt-10 sm:pt-14 md:pt-20 flex justify-center">
+        <div className="p-2 pt-10 sm:p-0 sm:pt-14 md:pt-20 flex justify-center">
             <div
                 className="grid gap-3 justify-center lg:w-1/2 xl:w-1/3 rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
                 style={{ gridTemplateColumns: "1fr" }}
