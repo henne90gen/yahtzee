@@ -141,7 +141,7 @@ function Statistics() {
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
             </div>
             <select
-                className="col-span-6"
+                className="col-span-6 px-3 py-2"
                 value={selectedNameIndex}
                 onChange={(event) => {
                     event.preventDefault();
