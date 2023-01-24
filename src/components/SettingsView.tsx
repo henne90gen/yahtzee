@@ -5,8 +5,15 @@ import {
     openSettings,
     updateLanguageSetting,
 } from "../store/settings";
-import { AllScoreKeys, Player, PlayerScores, ScoreKey } from "../logic/models";
+import {
+    AllScoreKeys,
+    GameState,
+    Player,
+    PlayerScores,
+    ScoreKey,
+} from "../logic/models";
 import { useState } from "react";
+import { GameStatistics } from "../store/statistics";
 
 function LanguageSettings() {
     const dispatch = useAppDispatch();
@@ -100,20 +107,34 @@ function PlayerScoreSummary(props: { playerScores: PlayerScores[] }) {
     );
 }
 
-function getSelectedPlayer(playerStates: Player[], selectedNameIndex: number) {
+function getSelectedPlayer(
+    games: GameStatistics[],
+    selectedNameIndex: number,
+    onlyShowCompletedGames: boolean
+) {
     const playerNamesToStatesMap = new Map<string, PlayerScores[]>();
-    for (const playerState of playerStates) {
-        if (!playerNamesToStatesMap.has(playerState.name)) {
-            playerNamesToStatesMap.set(playerState.name, []);
+    const allPlayerStates = [];
+    for (const game of games) {
+        if (onlyShowCompletedGames && !game.hasBeenCompleted) {
+            continue;
         }
-        playerNamesToStatesMap.get(playerState.name)?.push(playerState);
+
+        const playerStates = game.playerStates;
+        for (const playerState of playerStates) {
+            allPlayerStates.push(playerState);
+
+            if (!playerNamesToStatesMap.has(playerState.name)) {
+                playerNamesToStatesMap.set(playerState.name, []);
+            }
+            playerNamesToStatesMap.get(playerState.name)?.push(playerState);
+        }
     }
     const playerNames = Array.from(playerNamesToStatesMap.keys());
 
     if (selectedNameIndex === 0) {
         return {
             playerNames,
-            selectedPlayer: playerStates,
+            selectedPlayer: allPlayerStates,
         };
     }
 
@@ -124,12 +145,14 @@ function getSelectedPlayer(playerStates: Player[], selectedNameIndex: number) {
 
 function Statistics() {
     const games = useAppSelector((state) => state.statistics.games);
-    const playerStates = games.flatMap((g) => g.playerStates);
     const [selectedNameIndex, setSelectedNameIndex] = useState(0);
+    const [onlyShowCompletedGames, setOnlyShowCompletedGames] =
+        useState<boolean>(false);
 
     const { playerNames, selectedPlayer } = getSelectedPlayer(
-        playerStates,
-        selectedNameIndex
+        games,
+        selectedNameIndex,
+        onlyShowCompletedGames
     );
 
     return (
@@ -140,6 +163,17 @@ function Statistics() {
             <div className="col-span-2">
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
             </div>
+            <div className="col-span-5">
+                {/* TODO translate */}
+                Only show completed games
+            </div>
+            <input
+                type="checkbox"
+                checked={onlyShowCompletedGames}
+                onChange={() => {
+                    setOnlyShowCompletedGames((prev) => !prev);
+                }}
+            />
             <select
                 className="col-span-6 px-3 py-2"
                 value={selectedNameIndex}
