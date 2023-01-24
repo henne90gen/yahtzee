@@ -134,7 +134,9 @@ function Statistics() {
 
     return (
         <div className="p-1 sm:p-2 md:p-4 rounded-lg shadow-lg bg-white grid justify-center grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-2 sm:gap-4 md:gap-5">
-            <div className="col-span-4">{t("settings_statistics_GamesCompleted")}</div>
+            <div className="col-span-4">
+                {t("settings_statistics_GamesCompleted")}
+            </div>
             <div className="col-span-2">
                 {games.filter((g) => g.hasBeenCompleted).length}/{games.length}
             </div>

@@ -13,7 +13,7 @@ function xmur3(str: string) {
 
 // https://stackoverflow.com/a/47593316/2840827
 function mulberry32(a: number): [number, number] {
-    a += 0x6D2B79F5;
+    a += 0x6d2b79f5;
     let t = a;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -24,7 +24,7 @@ function mulberry32(a: number): [number, number] {
  * Generates an initial random state from a seed string.
  * @param seed
  */
-export function randomState(seed: string) {
+export function randomState(seed: string): number {
     return xmur3(seed);
 }
 
