@@ -90,7 +90,7 @@ function PlayerScoreSummary(props: { playerScores: PlayerScores[] }) {
                         <div>{stats.totalScore}</div>
                         <div>
                             {stats.set !== 0
-                                ? stats.totalScore / stats.set
+                                ? (stats.totalScore / stats.set).toFixed(1)
                                 : "-"}
                         </div>
                     </>
