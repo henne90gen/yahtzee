@@ -9,6 +9,7 @@ function Lock(props: { color: string }) {
         <g transform="translate(20, 20) scale(3, 3)">
             <path
                 fill={props.color}
+                fillOpacity="70%"
                 d="M16.07 8H15V5s0-5-5-5-5 5-5 5v3H3.93A1.93 1.93 0 0 0 2 9.93v8.15A1.93 1.93 0 0 0 3.93 20h12.14A1.93 1.93 0 0 0 18 18.07V9.93A1.93 1.93 0 0 0 16.07 8zM10 16a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm3-8H7V5.5C7 4 7 2 10 2s3 2 3 3.5z"
             />
         </g>
@@ -53,12 +54,8 @@ function DieSvg(props: {
     const dots: ReactElement[] = [];
 
     let dieColor = "black";
-    if (disabled || locked === "permanently-locked" || locked === "locked") {
-        dieColor = "gray";
-    }
-    let lockColor = "black";
     if (disabled || locked === "permanently-locked") {
-        lockColor = "gray";
+        dieColor = "gray";
     }
 
     if (topLeft(value)) {
@@ -97,12 +94,12 @@ function DieSvg(props: {
                 fill="white"
                 stroke={dieColor}
             />
-            {!disabled ? dots : null}
             {disabled ||
             locked === "locked" ||
             locked === "permanently-locked" ? (
-                <Lock color={lockColor} />
+                <Lock color={"gray"} />
             ) : null}
+            {!disabled ? dots : null}
         </svg>
     );
 }
