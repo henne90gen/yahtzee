@@ -1,5 +1,5 @@
 import { CaseReducer, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Player } from "../models";
+import { Player } from "../logic/models";
 
 export type GameStatistics = {
     playerStates: Player[];

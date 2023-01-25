@@ -1,4 +1,4 @@
-import { Player } from "../models";
+import { Player } from "../logic/models";
 import { RootState } from "./store";
 
 export function selectCurrentPlayer(state: RootState): Player {

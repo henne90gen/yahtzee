@@ -1,5 +1,4 @@
-import { ScoreKey } from "./models";
-import { useAppSelector } from "./store/store";
+import { ScoreKey } from "./logic/models";
 
 export const ALL_LANGUAGES = ["en", "de"] as const;
 type LanguageTuple = typeof ALL_LANGUAGES;
