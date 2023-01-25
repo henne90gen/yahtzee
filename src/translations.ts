@@ -13,7 +13,8 @@ type ReadyTranslationKey =
     | "ready_InvalidNameMessage"
     | "ready_AI"
     | "ready_AddPlayerTooltip"
-    | "ready_RemovePlayerTooltip";
+    | "ready_RemovePlayerTooltip"
+    | "ready_NotEnoughPlayers";
 type PlayingTranslationKey =
     | "playing_RollDice"
     | "playing_RollCount"
@@ -57,6 +58,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         ready_AI: "AI",
         ready_AddPlayerTooltip: "Add Player",
         ready_RemovePlayerTooltip: "Remove Player",
+        ready_NotEnoughPlayers: "Not Enough Players",
         playing_RollDice: "Roll Dice",
         playing_RollCount: "",
         playing_StrikeSomething: "",
@@ -100,6 +102,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         ready_AI: "KI",
         ready_AddPlayerTooltip: "Spieler hinzufügen",
         ready_RemovePlayerTooltip: "Spieler entfernen",
+        ready_NotEnoughPlayers: "Nicht genügend Spieler",
         playing_RollDice: "Würfeln",
         playing_RollCount: "Wurf",
         playing_StrikeSomething: "Streiche etwas",

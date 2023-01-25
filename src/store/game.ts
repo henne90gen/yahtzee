@@ -5,7 +5,6 @@ import {
     GameState,
     Player,
     PlayerName,
-    PlayerScores,
 } from "../logic/models";
 import {
     getAvailableOptions,
@@ -89,10 +88,7 @@ async function timeout(t: number, func: () => void): Promise<void> {
     });
 }
 
-export function endTurnThunk(payload: {
-    option: ScoreKey;
-    strike: boolean;
-}) {
+export function endTurnThunk(payload: { option: ScoreKey; strike: boolean }) {
     return (dispatch: AppDispatch, getState: () => RootState) => {
         dispatch(gameSlice.actions.endTurn(payload));
 
@@ -195,6 +191,29 @@ export function startGameThunk() {
     return (dispatch: AppDispatch) => {
         dispatch(gameSlice.actions.startGame());
         dispatch(doAiTurnThunk());
+    };
+}
+
+export function tryStartGameThunk() {
+    return (dispatch: AppDispatch, getState: () => RootState) => {
+        const state = getState().game.readyState;
+
+        if (state.names.length === 0) {
+            return;
+        }
+
+        let allNamesValid = true;
+        for (let i = 0; i < state.names.length; i++) {
+            if (state.names[i].name === "") {
+                dispatch(addInvalidPlayerName(i));
+                allNamesValid = false;
+            }
+        }
+        if (!allNamesValid) {
+            return;
+        }
+
+        dispatch(startGameThunk());
     };
 }
 

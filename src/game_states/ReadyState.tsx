@@ -5,6 +5,7 @@ import {
     removeInvalidPlayerName,
     removePlayerName,
     startGameThunk,
+    tryStartGameThunk,
     updatePlayerName,
 } from "../store/game";
 import t from "../translations";
@@ -81,18 +82,14 @@ export default function ReadyState() {
     const dispatch = useAppDispatch();
 
     function startGameClicked() {
-        let allNamesValid = true;
-        for (let i = 0; i < state.names.length; i++) {
-            if (state.names[i].name === "") {
-                dispatch(addInvalidPlayerName(i));
-                allNamesValid = false;
-            }
-        }
-        if (!allNamesValid) {
-            return;
-        }
+        dispatch(tryStartGameThunk());
+    }
 
-        dispatch(startGameThunk());
+    let notEnoughPlayersMsg = null;
+    if (state.names.length === 0) {
+        notEnoughPlayersMsg = (
+            <div className="col-span-2 text-red-700 text-center">{t("ready_NotEnoughPlayers")}</div>
+        );
     }
 
     const renderedPlayers = state.names.map((p, index) => (
@@ -129,6 +126,7 @@ export default function ReadyState() {
                 className="grid gap-4 pt-3"
                 style={{ gridTemplateColumns: "1fr 3fr" }}
             >
+                {notEnoughPlayersMsg}
                 <button
                     title={t("ready_AddPlayerTooltip")}
                     className="py-2 px-5 bg-blue-400 rounded-lg text-white"
@@ -139,10 +137,11 @@ export default function ReadyState() {
                     +
                 </button>
                 <button
-                    className="py-2 px-3 bg-green-500 rounded-lg text-white"
+                    className="py-2 px-3 bg-green-500 rounded-lg text-white disabled:cursor-not-allowed disabled:bg-green-300"
                     onClick={() => {
                         startGameClicked();
                     }}
+                    disabled={state.names.length === 0}
                 >
                     {t("ready_StartGame")}
                 </button>
