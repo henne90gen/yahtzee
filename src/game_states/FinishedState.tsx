@@ -8,7 +8,7 @@ import t from "../translations";
 function WinnerCard() {
     const winner = useAppSelector(selectWinner)!;
     return (
-        <div className="grid grid-flow-row gap-4 justify-center bg-white items-center p-3 md:p-10 rounded md:rounded-lg shadow-lg">
+        <div className="grid grid-flow-row gap-4 justify-center bg-white dark:bg-gray-600 dark:text-gray-100 items-center p-3 md:p-10 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-3xl font-bold">
                 {winner.name} {t("finished_Wins")}
             </div>
@@ -22,9 +22,9 @@ function WinnerCard() {
 function NewGameCard() {
     const dispatch = useAppDispatch();
     return (
-        <div className="grid justify-items-center bg-white items-center p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
+        <div className="grid justify-items-center bg-white dark:bg-gray-600 items-center p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
             <button
-                className="bg-green-500 text-white rounded px-3 py-2 my-3"
+                className="bg-green-500 dark:bg-green-600 text-white dark:text-gray-100 rounded px-3 py-2 my-3"
                 onClick={() => dispatch(newGame())}
             >
                 {t("finished_NewGame")}
