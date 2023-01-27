@@ -33,10 +33,10 @@ const LowerSectionScoreKeys: ScoreKey[] = [
 
 function TableHeader() {
     let classes =
-        "overflow-ellipsis overflow-hidden whitespace-nowrap border-black";
+        "overflow-ellipsis overflow-hidden whitespace-nowrap border-black dark:border-gray-100";
     return (
         <>
-            <div className="w-full h-full border-b-2 border-black" />
+            <div className="w-full h-full border-b-2 border-black dark:border-gray-100" />
             {UpperSectionScoreKeys.map((sk) => (
                 <div className={classes}>{t(sk)}</div>
             ))}
@@ -70,10 +70,10 @@ function Scores(props: { player: Player }) {
     const rollCount = useAppSelector((state) => state.game.rollCount);
     const availableOptions = getAvailableOptions(currentPlayer, dice);
     let classes =
-        "justify-self-center border-l-2 h-full w-full text-center flex justify-center items-center border-black";
+        "justify-self-center border-l-2 h-full w-full text-center flex justify-center items-center border-black dark:border-gray-100";
 
     if (player === winner) {
-        classes += " bg-green-100";
+        classes += " bg-green-100 dark:bg-green-700";
     }
 
     function selectedOption(option: ScoreKey, strike: boolean) {
@@ -105,7 +105,7 @@ function Scores(props: { player: Player }) {
             <>
                 <button
                     className={
-                        "enabled:bg-green-500 disabled:bg-green-200 disabled:cursor-not-allowed text-white rounded px-3 mr-2"
+                        "enabled:bg-green-500 disabled:bg-green-200 dark:enabled:bg-green-600 dark:disabled:bg-green-300 disabled:cursor-not-allowed text-white rounded px-3 mr-2"
                     }
                     disabled={disableEnterButton}
                     onClick={() => selectedOption(props.endTurnOption, false)}
@@ -113,7 +113,7 @@ function Scores(props: { player: Player }) {
                     {t("scoreBoard_Enter")}
                 </button>
                 <button
-                    className={"bg-red-400 text-white rounded px-3 ml-2"}
+                    className={"bg-red-400 dark:bg-red-500 text-white rounded px-3 ml-2"}
                     onClick={() => selectedOption(props.endTurnOption, true)}
                 >
                     {t("scoreBoard_Strike")}
@@ -161,7 +161,7 @@ export default function ScoreBoard(props: { winner?: Player }) {
     const players = useAppSelector((state) => state.game.players);
     return (
         <div
-            className="grid grid-flow-col bg-white items-center p-1 md:p-10 rounded md:rounded-lg shadow-lg"
+            className="grid grid-flow-col bg-white dark:bg-gray-600 dark:text-gray-100 items-center p-1 md:p-10 rounded md:rounded-lg shadow-lg"
             style={{
                 gridTemplateRows: "4em repeat(19, minmax(0, 1fr))",
                 gridTemplateColumns: "10em",

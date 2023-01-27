@@ -33,7 +33,7 @@ function PlayArea() {
         rollButtonColor = "bg-green-300";
     }
     return (
-        <div className="grid gap-2 justify-items-center justify-center bg-white py-4 px-3 rounded md:rounded-lg shadow-lg">
+        <div className="grid gap-2 justify-items-center justify-center bg-white dark:bg-gray-600 dark:text-gray-100 py-4 px-3 rounded md:rounded-lg shadow-lg">
             <div className="text-center text-2xl">{currentPlayer.name}</div>
             <button
                 className={rollButtonColor + " w-48 py-2 rounded-xl text-white"}
@@ -50,9 +50,9 @@ function PlayArea() {
 function EndGameCard() {
     const dispatch = useAppDispatch();
     return (
-        <div className="grid justify-items-center justify-center bg-white p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
+        <div className="grid justify-items-center justify-center bg-white dark:bg-gray-600 p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
             <button
-                className="bg-red-300 rounded text-gray-700 px-3 py-2 my-3"
+                className="bg-red-300 text-gray-700 dark:bg-red-500 dark:text-gray-100 rounded px-3 py-2 my-3"
                 onClick={() => dispatch(endGameThunk())}
             >
                 {t("playing_EndGame")}
