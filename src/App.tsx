@@ -30,10 +30,21 @@ function App() {
         view = <SettingsView />;
     }
 
+    const darkMode = true ? "dark " : "";
+
     return (
-        <div className="grid grid-cols-1 gap-5 justify-center w-full sm:w-5/6 md:w-3/4 xl:w-[60rem] p-2 sm:p-0 sm:py-5 md:py-10">
-            <SettingsButton isSettingsOpen={isSettingsOpen} />
-            {view}
+        <div className="w-full h-full bg-gray-100 dark:bg-gray-500">
+            <div className="flex justify-center">
+                <div
+                    className={
+                        darkMode +
+                        "grid grid-cols-1 gap-5 justify-center w-full sm:w-5/6 md:w-3/4 xl:w-[60rem] p-2 sm:p-0 sm:py-5 md:py-10"
+                    }
+                >
+                    <SettingsButton isSettingsOpen={isSettingsOpen} />
+                    {view}
+                </div>
+            </div>
         </div>
     );
 }

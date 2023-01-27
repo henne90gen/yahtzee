@@ -4,7 +4,6 @@ import {
     addPlayerName,
     removeInvalidPlayerName,
     removePlayerName,
-    startGameThunk,
     tryStartGameThunk,
     updatePlayerName,
 } from "../store/game";
@@ -18,9 +17,9 @@ function PlayerAvatar(props: {
     removePlayer: () => void;
 }) {
     const { player, invalid, updatePlayer, removePlayer } = props;
-    let bgColor = "bg-blue-200 ";
+    let bgColor = "bg-blue-200 dark:bg-blue-500 dark:text-gray-100 ";
     if (invalid) {
-        bgColor = "bg-red-200 ";
+        bgColor = "bg-red-200 dark:bg-red-500 ";
     }
 
     function getInvalidNameMessage() {
@@ -29,7 +28,7 @@ function PlayerAvatar(props: {
         }
 
         return (
-            <div className="col-span-3 text-xs text-red-700 pt-0.5">
+            <div className="col-span-3 text-xs pt-0.5 text-red-700 dark:text-red-400">
                 {t("ready_InvalidNameMessage")}
             </div>
         );
@@ -61,11 +60,11 @@ function PlayerAvatar(props: {
                         updatePlayer({ ...player, isAI: value });
                     }}
                 />
-                <span className="ml-1 w-5">{t("ready_AI")}</span>
+                <span className="ml-1 w-5 dark:text-gray-200">{t("ready_AI")}</span>
             </div>
             <button
                 title={t("ready_RemovePlayerTooltip")}
-                className="p-2 w-8 h-8 text-center rounded bg-red-300"
+                className="p-2 w-8 h-8 text-center rounded bg-red-300 dark:bg-red-500 dark:text-white"
                 onClick={() => {
                     removePlayer();
                 }}
@@ -88,7 +87,9 @@ export default function ReadyState() {
     let notEnoughPlayersMsg = null;
     if (state.names.length === 0) {
         notEnoughPlayersMsg = (
-            <div className="col-span-2 text-red-700 text-center">{t("ready_NotEnoughPlayers")}</div>
+            <div className="col-span-2 text-red-700 text-center dark:text-red-400">
+                {t("ready_NotEnoughPlayers")}
+            </div>
         );
     }
 
@@ -118,7 +119,7 @@ export default function ReadyState() {
     ));
     return (
         <div
-            className="grid gap-3 justify-center rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white"
+            className="grid gap-3 justify-center rounded shadow-lg p-5 sm:p-10 md:p-20 bg-white dark:bg-gray-600"
             style={{ gridTemplateColumns: "1fr" }}
         >
             {renderedPlayers}
@@ -129,7 +130,7 @@ export default function ReadyState() {
                 {notEnoughPlayersMsg}
                 <button
                     title={t("ready_AddPlayerTooltip")}
-                    className="py-2 px-5 bg-blue-400 rounded-lg text-white"
+                    className="py-2 px-5 bg-blue-400 dark:bg-blue-600 rounded-lg text-white"
                     onClick={() => {
                         dispatch(addPlayerName({ name: "", isAI: false }));
                     }}
@@ -137,7 +138,7 @@ export default function ReadyState() {
                     +
                 </button>
                 <button
-                    className="py-2 px-3 bg-green-500 rounded-lg text-white disabled:cursor-not-allowed disabled:bg-green-300"
+                    className="py-2 px-3 bg-green-500 dark:bg-green-600 rounded-lg text-white dark:text-gray-100 disabled:cursor-not-allowed disabled:bg-green-300 dark:disabled:bg-green-800 dark:disabled:text-gray-400"
                     onClick={() => {
                         startGameClicked();
                     }}
