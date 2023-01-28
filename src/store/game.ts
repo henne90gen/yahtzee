@@ -38,7 +38,7 @@ export interface GameData {
     randomState: number;
 }
 
-export function initialState(): GameData {
+export function initialGameState(): GameData {
     return {
         readyState: {
             names: [
@@ -233,7 +233,7 @@ export function endGameThunk() {
 
 const gameSlice = createSlice<GameData, GameReducers, "game">({
     name: "game",
-    initialState: initialState(),
+    initialState: initialGameState(),
     reducers: {
         addPlayerName: (state, action: PayloadAction<PlayerName>) => {
             state.readyState.names.push(action.payload);
