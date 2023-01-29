@@ -95,7 +95,7 @@ function ThemeSetting() {
         <>
             <div className="self-center">{t("settings_Theme")}</div>
             <div className="grid justify-center grid-cols-3">
-                <SunIcon theme={theme} className="justify-self-end" />
+                <SunIcon theme={theme} className="justify-self-end pr-2" />
                 <CheckboxSlider
                     checked={theme === "dark"}
                     onChange={() => dispatch(toggleTheme())}
@@ -109,7 +109,7 @@ function ThemeSetting() {
 
 function SettingsCard() {
     return (
-        <div className="grid gap-10 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100">
+        <div className="grid gap-10 grid-cols-[1fr_3fr] sm:grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100">
             <ThemeSetting />
             <LanguageSetting />
         </div>
