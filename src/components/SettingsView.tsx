@@ -3,18 +3,25 @@ import t, { Language } from "../translations";
 import {
     closeSettings,
     openSettings,
+    toggleTheme,
     updateLanguageSetting,
 } from "../store/settings";
-import { AllScoreKeys, PlayerScores, ScoreKey } from "../logic/models";
+import {
+    AllScoreKeys,
+    GameStatistics,
+    PlayerScores,
+    ScoreKey,
+    Theme,
+} from "../logic/models";
 import { useState } from "react";
-import { GameStatistics } from "../store/statistics";
+import { CheckboxSlider } from "./CheckboxSlider";
 
-function LanguageSettings() {
+function LanguageSetting() {
     const dispatch = useAppDispatch();
     const language = useAppSelector((state) => state.settings.language);
     return (
-        <div className="grid gap-20 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100">
-            <div>{t("settings_Language")}</div>
+        <>
+            <div className="self-center">{t("settings_Language")}</div>
             <div className="grid justify-center">
                 <select
                     value={language}
@@ -31,6 +38,80 @@ function LanguageSettings() {
                     <option value="en">EN</option>
                 </select>
             </div>
+        </>
+    );
+}
+
+function SunIcon(props: { theme: Theme; className?: string }) {
+    const color = props.theme === "light" ? "black" : "white";
+    return (
+        <svg
+            width={32}
+            height={32}
+            viewBox="0 0 24 24"
+            fill="none"
+            strokeWidth={2}
+            stroke={color}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={props.className}
+        >
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+    );
+}
+
+function MoonIcon(props: { theme: Theme; className?: string }) {
+    const color = props.theme === "light" ? "black" : "white";
+    return (
+        <svg
+            width={32}
+            height={32}
+            viewBox="0 0 24 24"
+            fill={color}
+            className={props.className}
+        >
+            <mask id="moon-mask">
+                <rect x={0} y={0} width={100} height={100} fill="white" />
+                <circle cx={19} cy={8} r={9} fill="black" />
+            </mask>
+            <circle cx={13} cy={12} r={7} mask="url(#moon-mask)" />
+        </svg>
+    );
+}
+
+function ThemeSetting() {
+    const dispatch = useAppDispatch();
+    const theme = useAppSelector((state) => state.settings.theme);
+    return (
+        <>
+            <div className="self-center">{t("settings_Theme")}</div>
+            <div className="grid justify-center grid-cols-3">
+                <SunIcon theme={theme} className="justify-self-end" />
+                <CheckboxSlider
+                    checked={theme === "dark"}
+                    onChange={() => dispatch(toggleTheme())}
+                    className="justify-self-center"
+                />
+                <MoonIcon theme={theme} className="justify-self-start" />
+            </div>
+        </>
+    );
+}
+
+function SettingsCard() {
+    return (
+        <div className="grid gap-10 grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100">
+            <ThemeSetting />
+            <LanguageSetting />
         </div>
     );
 }
@@ -137,7 +218,7 @@ function getSelectedPlayer(
     return { playerNames, selectedPlayer };
 }
 
-function Statistics() {
+function StatisticsCard() {
     const games = useAppSelector((state) => state.statistics.games);
     const [selectedNameIndex, setSelectedNameIndex] = useState(0);
     const [onlyShowCompletedGames, setOnlyShowCompletedGames] =
@@ -169,7 +250,7 @@ function Statistics() {
                 }}
             />
             <select
-                className="col-span-6 px-3 py-2 dark:bg-blue-600 dark:text-gray-100"
+                className="col-span-6 rounded px-3 py-2 dark:bg-blue-600 dark:text-gray-100"
                 value={selectedNameIndex}
                 onChange={(event) => {
                     event.preventDefault();
@@ -191,17 +272,18 @@ function Statistics() {
 export function SettingsView() {
     return (
         <>
-            <LanguageSettings />
-            <Statistics />
+            <SettingsCard />
+            <StatisticsCard />
         </>
     );
 }
 
 export function SettingsButton(props: { isSettingsOpen: boolean }) {
     const dispatch = useAppDispatch();
+    const theme = useAppSelector((state) => state.settings.theme);
     const buttonClasses =
         "absolute top-3 right-3 sm:top-4 sm:right-7 md:top-8 md:right-10";
-    const color = true ? "white" : "black";
+    const color = theme === "light" ? "black" : "white";
     if (props.isSettingsOpen) {
         return (
             <button

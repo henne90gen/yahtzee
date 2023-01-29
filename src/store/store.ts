@@ -1,15 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { loadFromLocalStorage, localStorageMiddleware } from "./persistence";
 import { changeLanguage } from "../translations";
 import { settingsReducer } from "./settings";
-import { statisticsReducer} from "./statistics";
+import { statisticsReducer } from "./statistics";
 import { gameReducer } from "./game";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { RootState } from "../logic/models";
 
 const preloadedState = loadFromLocalStorage();
 changeLanguage(preloadedState.settings.language);
 
-export const store = configureStore({
+export const store = configureStore<RootState>({
     reducer: {
         game: gameReducer,
         statistics: statisticsReducer,
@@ -17,11 +18,10 @@ export const store = configureStore({
     },
     preloadedState,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(localStorageMiddleware),
+        getDefaultMiddleware().concat(localStorageMiddleware) as any, // NOTE "any" fixes a type error here
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
+// Infer the `AppDispatch` types from the store itself
 export type AppDispatch = typeof store.dispatch;
 
 type DispatchFunc = () => AppDispatch;

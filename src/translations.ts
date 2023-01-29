@@ -36,6 +36,7 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_Strike";
 type SettingsTranslationKey =
     | "settings_Language"
+    | "settings_Theme"
     | "settings_statistics_GamesCompleted"
     | "settings_statistics_TotalScores"
     | "settings_statistics_FilledCount"
@@ -86,6 +87,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalUpperSection: "Total Upper Section",
         scoreBoard_GrandTotal: "Grand Total",
         settings_Language: "Language",
+        settings_Theme: "Theme",
         settings_statistics_GamesCompleted: "Games Completed",
         settings_statistics_TotalScores: "Total Scores",
         settings_statistics_FilledCount: "Filled",
@@ -130,6 +132,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalUpperSection: "Summe Unten",
         scoreBoard_GrandTotal: "Endsumme",
         settings_Language: "Sprache",
+        settings_Theme: "Farbschema",
         settings_statistics_GamesCompleted: "Abgeschlossene Spiele",
         settings_statistics_TotalScores: "Gesamtpunktzahl",
         settings_statistics_FilledCount: "Ausgefüllt",

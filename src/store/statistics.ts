@@ -1,14 +1,5 @@
 import { CaseReducer, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Player } from "../logic/models";
-
-export type GameStatistics = {
-    playerStates: Player[];
-    hasBeenCompleted: boolean;
-};
-
-export interface StatisticsData {
-    games: GameStatistics[];
-}
+import { GameStatistics, StatisticsData } from "../logic/models";
 
 export function initialStatistics(): StatisticsData {
     return { games: [] };

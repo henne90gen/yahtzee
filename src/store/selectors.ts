@@ -1,5 +1,4 @@
-import { Player } from "../logic/models";
-import { RootState } from "./store";
+import { Player, RootState } from "../logic/models";
 
 export function selectCurrentPlayer(state: RootState): Player {
     const players = state.game.players;
