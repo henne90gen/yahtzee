@@ -3,6 +3,7 @@ import PlayingState from "./game_states/PlayingState";
 import FinishedState from "./game_states/FinishedState";
 import { useAppSelector } from "./store/store";
 import { SettingsButton, SettingsView } from "./components/SettingsView";
+import t from "./translations";
 
 function App() {
     const state = useAppSelector((state) => state.game.currentState);
@@ -40,11 +41,16 @@ function App() {
         console.error("Failed to find <html> node");
     }
 
+    let title = isSettingsOpen ? t("settings_Title") : t("app_Title");
+
     return (
         <div className="w-full h-full bg-gray-100 dark:bg-gray-500">
             <div className="flex justify-center">
                 <div className="grid grid-cols-1 gap-5 justify-center w-full sm:w-5/6 md:w-3/4 xl:w-[60rem] p-2 sm:p-0 sm:py-5 md:py-10">
                     <SettingsButton isSettingsOpen={isSettingsOpen} />
+                    <div className="text-center test-black dark:text-white w-full text-2xl md:pb-4">
+                        {title}
+                    </div>
                     {view}
                 </div>
             </div>

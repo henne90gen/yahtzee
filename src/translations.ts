@@ -35,6 +35,7 @@ type ScoreBoardTranslationKey =
     | "scoreBoard_Enter"
     | "scoreBoard_Strike";
 type SettingsTranslationKey =
+    | "settings_Title"
     | "settings_Language"
     | "settings_Theme"
     | "settings_statistics_GamesCompleted"
@@ -46,6 +47,7 @@ type SettingsTranslationKey =
     | "settings_statistics_AverageScore";
 
 export type TranslationKey =
+    | "app_Title"
     | ReadyTranslationKey
     | PlayingTranslationKey
     | FinishedTranslationKey
@@ -54,6 +56,7 @@ export type TranslationKey =
 
 const TRANSLATIONS: Translation<TranslationKey> = {
     en: {
+        app_Title: "Yahtzee",
         ready_StartGame: "Start Game",
         ready_InvalidNameMessage: "Name cannot be empty",
         ready_AI: "AI",
@@ -86,6 +89,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalLowerSection: "Total Lower Section",
         scoreBoard_TotalUpperSection: "Total Upper Section",
         scoreBoard_GrandTotal: "Grand Total",
+        settings_Title: "Settings",
         settings_Language: "Language",
         settings_Theme: "Theme",
         settings_statistics_GamesCompleted: "Games Completed",
@@ -99,6 +103,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_Strike: "Strike",
     },
     de: {
+        app_Title: "Yahtzee",
         ready_StartGame: "Spiel starten",
         ready_InvalidNameMessage: "Name darf nicht leer sein",
         ready_AI: "KI",
@@ -131,6 +136,7 @@ const TRANSLATIONS: Translation<TranslationKey> = {
         scoreBoard_TotalLowerSection: "Summe Oben",
         scoreBoard_TotalUpperSection: "Summe Unten",
         scoreBoard_GrandTotal: "Endsumme",
+        settings_Title: "Einstellungen",
         settings_Language: "Sprache",
         settings_Theme: "Farbschema",
         settings_statistics_GamesCompleted: "Abgeschlossene Spiele",
