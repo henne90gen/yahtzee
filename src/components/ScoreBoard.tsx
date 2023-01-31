@@ -105,7 +105,7 @@ function Scores(props: { player: Player }) {
             <>
                 <button
                     className={
-                        "enabled:bg-green-500 disabled:bg-green-200 dark:enabled:bg-green-600 dark:disabled:bg-green-300 disabled:cursor-not-allowed text-white rounded px-3 mr-2"
+                        "text-sm enabled:bg-green-500 disabled:bg-green-200 dark:enabled:bg-green-600 dark:disabled:bg-green-300 disabled:cursor-not-allowed text-white rounded px-3 mr-2"
                     }
                     disabled={disableEnterButton}
                     onClick={() => selectedOption(props.endTurnOption, false)}
@@ -113,7 +113,7 @@ function Scores(props: { player: Player }) {
                     {t("scoreBoard_Enter")}
                 </button>
                 <button
-                    className={"bg-red-400 dark:bg-red-500 text-white rounded px-3 ml-2"}
+                    className={"text-sm bg-red-400 dark:bg-red-500 text-white rounded px-3 ml-2"}
                     onClick={() => selectedOption(props.endTurnOption, true)}
                 >
                     {t("scoreBoard_Strike")}
