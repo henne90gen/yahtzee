@@ -290,7 +290,7 @@ export function SettingsButton(props: { isSettingsOpen: boolean }) {
                 className={buttonClasses}
                 onClick={() => dispatch(closeSettings())}
             >
-                <svg width="32px" height="32px" viewBox="0 0 50 50">
+                <svg className="transition ease-in-out hover:scale-110" width="32px" height="32px" viewBox="0 0 50 50">
                     <circle
                         cx={25}
                         cy={25}
@@ -318,7 +318,7 @@ export function SettingsButton(props: { isSettingsOpen: boolean }) {
                 className={buttonClasses}
                 onClick={() => dispatch(openSettings())}
             >
-                <svg width="32px" height="32px" viewBox="0 0 24 24">
+                <svg className="ease-in-out hover:animate-spin-slow" width="32px" height="32px" viewBox="0 0 24 24">
                     <path
                         fill={color}
                         stroke="none"
