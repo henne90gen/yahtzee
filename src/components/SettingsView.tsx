@@ -25,7 +25,7 @@ function LanguageSetting() {
             <div className="grid justify-center">
                 <select
                     value={language}
-                    className="p-2 rounded bg-blue-500 text-white dark:bg-blue-600 dark:text-gray-100"
+                    className="p-2 rounded bg-gray-300 text-black dark:bg-blue-500 dark:text-gray-100"
                     onChange={(event) =>
                         dispatch(
                             updateLanguageSetting(
@@ -107,9 +107,27 @@ function ThemeSetting() {
     );
 }
 
+function Help() {
+    const language = useAppSelector((state) => state.settings.language);
+    return (
+        <>
+            <label>{t("settings_Help")}</label>
+            <div className="flex justify-center">
+                <a
+                    className="text-center px-3 py-2 rounded bg-gray-300 dark:bg-blue-500 dark:text-gray-100 text-black"
+                    href={`https://${language}.wikipedia.org/wiki/Yahtzee`}
+                >
+                    Wikipedia
+                </a>
+            </div>
+        </>
+    );
+}
+
 function SettingsCard() {
     return (
-        <div className="grid gap-10 grid-cols-[1fr_3fr] sm:grid-cols-2 justify-center rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100">
+        <div className="rounded-lg shadow-lg p-5 sm:p-10 md:p-12 bg-white dark:bg-gray-600 dark:text-gray-100 grid gap-10 grid-cols-[1fr_3fr] sm:grid-cols-2 justify-center">
+            <Help />
             <ThemeSetting />
             <LanguageSetting />
         </div>
@@ -250,7 +268,7 @@ function StatisticsCard() {
                 }}
             />
             <select
-                className="col-span-6 rounded px-3 py-2 dark:bg-blue-600 dark:text-gray-100"
+                className="col-span-6 rounded px-3 py-2 dark:bg-blue-500 dark:text-gray-100"
                 value={selectedNameIndex}
                 onChange={(event) => {
                     event.preventDefault();
