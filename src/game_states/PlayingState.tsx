@@ -52,7 +52,7 @@ function EndGameCard() {
     return (
         <div className="grid justify-items-center justify-center bg-white dark:bg-gray-600 p-1 sm:p-2 md:p-4 rounded md:rounded-lg shadow-lg">
             <button
-                className="bg-red-300 text-gray-700 dark:bg-red-500 dark:text-gray-100 rounded px-3 py-2 my-3"
+                className="bg-red-400 text-gray-800 dark:bg-red-500 dark:text-gray-100 rounded px-3 py-2 my-3"
                 onClick={() => dispatch(endGameThunk())}
             >
                 {t("playing_EndGame")}

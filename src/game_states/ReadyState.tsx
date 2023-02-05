@@ -130,7 +130,7 @@ export default function ReadyState() {
                 {notEnoughPlayersMsg}
                 <button
                     title={t("ready_AddPlayerTooltip")}
-                    className="py-2 px-5 bg-blue-400 dark:bg-blue-600 rounded-lg text-white"
+                    className="py-2 px-5 bg-blue-400 dark:bg-blue-500 rounded-lg text-white"
                     onClick={() => {
                         dispatch(addPlayerName({ name: "", isAI: false }));
                     }}
